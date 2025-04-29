@@ -5,7 +5,6 @@ import java.util.*;
 public class Game {
     private Player player;
     private Scanner scanner;
-    private Map<String, Item> itemCatalog = new HashMap<>();
 
     public void start() {
         setupWorld();
@@ -21,6 +20,8 @@ public class Game {
                 break;
             } else if (input.equals("look")) {
                 System.out.println(player.getCurrentRoom().getFullDescription());
+            } else if (input.equals("items")) {
+                player.getCurrentRoom().listItems();
             } else if (input.startsWith("go ")) {
                 handleMovement(input.substring(3));
             } else if (input.startsWith("take ")) {
@@ -30,7 +31,7 @@ public class Game {
             } else if (input.equals("inventory")) {
                 player.showInventory();
             } else if (input.equals("help")) {
-                System.out.println("Commands: go [direction], look, take [item], use [item], inventory, help, quit");
+                System.out.println("Commands: go [direction], look, items, take [item], use [item], inventory, help, quit");
             } else {
                 System.out.println("I don't understand that.");
             }
@@ -97,4 +98,3 @@ public class Game {
         player = new Player(foyer);
     }
 }
-

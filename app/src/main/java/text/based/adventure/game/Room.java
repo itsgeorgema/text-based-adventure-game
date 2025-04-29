@@ -36,6 +36,17 @@ public class Room {
         return sb.toString();
     }
 
+    public void listItems() {
+        if (items.isEmpty()) {
+            System.out.println("There are no items in this room.");
+        } else {
+            System.out.println("Items in this room:");
+            for (Item item : items) {
+                System.out.println("- " + item.getName() + ": " + item.getDescription());
+            }
+        }
+    }
+
     public void addItem(Item item) {
         items.add(item);
     }
