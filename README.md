@@ -1,25 +1,24 @@
-Text-Based Java Adventure Game
+# Text-Based Java Adventure Game
 
 A modular, object-oriented text-based adventure game built in Java, inspired by the classic Zork. Explore rooms, solve puzzles, collect items, and interact with a fully functional CLI game engine.
 
-🚀 Features
+## 🚀 Features
 
-Room navigation via HashMap-based exits
+- Room navigation via `HashMap`-based exits
+- Puzzle-solving with item-triggered logic
+- Player inventory system using `ArrayList`
+- Object-oriented architecture with `Room`, `Item`, `Player`, `Puzzle`, and `Game` classes
+- Commands: `go [direction]`, `look`, `items`, `take [item]`, `use [item]`, `inventory`, `help`, `quit`
 
-Puzzle-solving with item-triggered logic
+## 🗺️ Sample Room Layout
 
-Player inventory system using ArrayList
-
-Object-oriented architecture with Room, Item, Player, Puzzle, and Game classes
-
-📝 Commands: go [direction], look, items, take [item], use [item], inventory, help, quit
-
-🗺️ Sample Room Layout
-
+```
 Foyer -- North --> Hall -- East --> Kitchen -- North --> Vault (locked)
+```
 
-🧪 Example Gameplay
+## 🧪 Example Gameplay
 
+```text
 > look
 Foyer: A small entryway with a dusty rug. Exits: [north]
 
@@ -40,9 +39,11 @@ You used the key to solve a puzzle!
 > go north
 You moved north.
 Vault: A hidden room with treasure!
+```
 
-📂 Project Structure
+## 📂 Project Structure
 
+```
 src/
   └── main/
       └── java/
@@ -53,14 +54,16 @@ src/
               ├── Room.java
               ├── Item.java
               └── Puzzle.java
+```
 
-🛠️ Build & Run (Gradle)
+## 🛠️ Build & Run (Gradle)
 
+```bash
 ./gradlew build
 ./gradlew run
+```
 
-Dependencies
+## Dependencies
 
-Java 11+
-
-Gradle (for build automation)
+- Java 11+
+- Gradle (for build automation)
