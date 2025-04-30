@@ -1,8 +1,6 @@
 package text.based.adventure.game;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Room {
     private String name;
@@ -18,14 +16,6 @@ public class Room {
         this.items = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public void setExit(String direction, Room room) {
         exits.put(direction.toLowerCase(), room);
     }
@@ -34,8 +24,26 @@ public class Room {
         return exits.get(direction.toLowerCase());
     }
 
-    public String getExitString() {
-        return "Exits: " + String.join(", ", exits.keySet());
+    public Map<String, Room> getExits() {
+        return exits;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getFullDescription() {
+        StringBuilder sb = new StringBuilder(name + ": " + description);
+        if (!items.isEmpty()) {
+            sb.append("\nItems here: ");
+            for (Item item : items) sb.append(item.getName()).append(", ");
+        }
+        sb.append("\nExits: ").append(String.join(", ", exits.keySet()));
+        return sb.toString();
     }
 
     public void addItem(Item item) {
@@ -44,17 +52,17 @@ public class Room {
 
     public void listItems() {
         if (items.isEmpty()) {
-            System.out.println("No items here.");
+            System.out.println("There are no items here.");
         } else {
             for (Item item : items) {
-                System.out.println("- " + item.getName() + ": " + item.getDescription());
+                System.out.println("- " + item);
             }
         }
     }
 
-    public Item takeItem(String itemName) {
+    public Item takeItem(String name) {
         for (Item item : items) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
+            if (item.getName().equalsIgnoreCase(name)) {
                 items.remove(item);
                 return item;
             }
@@ -68,9 +76,5 @@ public class Room {
 
     public Puzzle getPuzzle() {
         return puzzle;
-    }
-
-    public String getFullDescription() {
-        return name + ": " + description + "\n" + getExitString();
     }
 }

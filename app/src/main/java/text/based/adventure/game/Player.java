@@ -3,25 +3,37 @@ package text.based.adventure.game;
 import java.util.*;
 
 public class Player {
-    private String name;
     private Room currentRoom;
     private List<Item> inventory;
 
-    public Player(String name) {
-        this.name = name;
+    public Player(Room startingRoom) {
+        this.currentRoom = startingRoom;
         this.inventory = new ArrayList<>();
-    }
-
-    public void setCurrentRoom(Room room) {
-        this.currentRoom = room;
     }
 
     public Room getCurrentRoom() {
         return currentRoom;
     }
 
+    public void setCurrentRoom(Room room) {
+        this.currentRoom = room;
+    }
+
     public List<Item> getInventory() {
         return inventory;
+    }
+
+    public void addItem(Item item) {
+        inventory.add(item);
+    }
+
+    public boolean hasItem(String name) {
+        for (Item item : inventory) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void showInventory() {
@@ -30,52 +42,43 @@ public class Player {
         } else {
             System.out.println("Inventory:");
             for (Item item : inventory) {
-                System.out.println("- " + item.getName() + ": " + item.getDescription());
+                System.out.println("- " + item);
             }
         }
     }
 
     public void move(String direction) {
-        Room nextRoom = currentRoom.getExit(direction);
-        if (nextRoom == null) {
+        Room next = currentRoom.getExit(direction);
+        if (next == null) {
             System.out.println("You can't go that way.");
-        } else if (nextRoom.getPuzzle() != null && !hasItem(nextRoom.getPuzzle().getRequiredItem())) {
-            System.out.println("Puzzle blocks the way: " + nextRoom.getPuzzle().getDescription());
+        } else if (next.getPuzzle() != null && !next.getPuzzle().isSolved()) {
+            System.out.println("Blocked: " + next.getPuzzle().getHint());
         } else {
-            setCurrentRoom(nextRoom);
-            System.out.println("You move to the " + nextRoom.getName() + ".");
-            System.out.println(nextRoom.getFullDescription());
+            setCurrentRoom(next);
+            System.out.println(next.getFullDescription());
         }
-    }
-
-    public boolean hasItem(String itemName) {
-        for (Item item : inventory) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void useItem(String itemName) {
-        Room room = getCurrentRoom();
-        Puzzle puzzle = room.getPuzzle();
-
-        if (puzzle != null && itemName.equalsIgnoreCase(puzzle.getRequiredItem()) && hasItem(itemName)) {
-            System.out.println(puzzle.getSolvedMessage());
-            room.setPuzzle(null);  // remove puzzle after solving
+        Puzzle puzzle = currentRoom.getPuzzle();
+        if (puzzle != null && !puzzle.isSolved()) {
+            if (puzzle.trySolve(itemName)) {
+                System.out.println(puzzle.getSolvedMessage());
+            } else {
+                System.out.println("That item doesn’t work here.");
+            }
         } else {
-            System.out.println("That item can't be used here.");
+            System.out.println("There is nothing to use that on.");
         }
     }
 
     public void takeItem(String itemName) {
         Item item = currentRoom.takeItem(itemName);
         if (item != null) {
-            inventory.add(item);
+            addItem(item);
             System.out.println("You picked up: " + item.getName());
         } else {
-            System.out.println("Item not found.");
+            System.out.println("That item is not here.");
         }
     }
 }
