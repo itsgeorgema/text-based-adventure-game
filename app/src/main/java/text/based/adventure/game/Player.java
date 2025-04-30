@@ -28,12 +28,7 @@ public class Player {
     }
 
     public boolean hasItem(String name) {
-        for (Item item : inventory) {
-            if (item.getName().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
+        return inventory.stream().anyMatch(i -> i.getName().equalsIgnoreCase(name));
     }
 
     public void showInventory() {
@@ -47,6 +42,34 @@ public class Player {
         }
     }
 
+    public void inspectItem(String name) {
+        for (Item item : inventory) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                System.out.println(item.getDescription());
+                return;
+            }
+        }
+        System.out.println("You don't have that item.");
+    }
+
+    public void combineItems(String name1, String name2) {
+        Item first = null;
+        Item second = null;
+        for (Item item : inventory) {
+            if (item.getName().equalsIgnoreCase(name1)) first = item;
+            if (item.getName().equalsIgnoreCase(name2)) second = item;
+        }
+        if (first != null && second != null && first.isCombinable() && second.isCombinable()) {
+            inventory.remove(first);
+            inventory.remove(second);
+            Item combined = new Item(name1 + "+" + name2, "Combined form of " + name1 + " and " + name2);
+            inventory.add(combined);
+            System.out.println("You combined the items into: " + combined.getName());
+        } else {
+            System.out.println("You can't combine those items.");
+        }
+    }
+
     public void move(String direction) {
         Room next = currentRoom.getExit(direction);
         if (next == null) {
@@ -55,7 +78,12 @@ public class Player {
             System.out.println("Blocked: " + next.getPuzzle().getHint());
         } else {
             setCurrentRoom(next);
-            System.out.println(next.getFullDescription());
+            if (!next.isVisited()) {
+                next.setVisited(true);
+                System.out.println(next.getFullDescription());
+            } else {
+                System.out.println("You return to the " + next.getName());
+            }
         }
     }
 

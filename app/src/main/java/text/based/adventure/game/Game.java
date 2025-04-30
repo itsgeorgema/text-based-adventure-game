@@ -5,6 +5,7 @@ import java.util.*;
 public class Game {
     private Player player;
     private Scanner scanner;
+    private List<Room> rooms;
 
     public void start() {
         setupWorld();
@@ -28,10 +29,19 @@ public class Game {
                 player.takeItem(input.substring(5));
             } else if (input.startsWith("use ")) {
                 player.useItem(input.substring(4));
+            } else if (input.startsWith("inspect ")) {
+                player.inspectItem(input.substring(8));
+            } else if (input.startsWith("combine ")) {
+                String[] parts = input.substring(8).split(" with ");
+                if (parts.length == 2) {
+                    player.combineItems(parts[0].trim(), parts[1].trim());
+                } else {
+                    System.out.println("Use format: combine [item1] with [item2]");
+                }
             } else if (input.equals("inventory")) {
                 player.showInventory();
             } else if (input.equals("help")) {
-                System.out.println("Commands: go [direction], look, items, take [item], use [item], inventory, help, quit");
+                System.out.println("Commands: go [direction], look, items, take [item], use [item], inspect [item], combine [item1] with [item2], inventory, help, quit");
             } else {
                 System.out.println("I don't understand that.");
             }
@@ -39,41 +49,122 @@ public class Game {
     }
 
     private void setupWorld() {
-        // Setup Rooms
-        List<Room> rooms = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            rooms.add(new Room("Room" + i, "This is room number " + i + ", filled with high-tech security and valuable art."));
+        // Define 20 unique rooms
+        String[] roomNames = {
+            "Foyer", "Gallery", "Vault", "Security Office", "Atrium", "Rooftop", "Archives", "Workshop", "Hall of Sculptures", "Server Room",
+            "Library", "Surveillance Room", "Loading Dock", "Exhibit Hall", "Break Room", "Storage Room", "Director's Office", "Conservatory", "IT Closet", "Control Room"
+        };
+        String[] roomDescs = {
+            "The museum's marble-floored entry.",
+            "Paintings hang elegantly across velvet walls.",
+            "A steel-reinforced vault with fingerprint scanner.",
+            "Rows of monitors blink rapidly.",
+            "Open skylight and pressure-sensitive floors.",
+            "High vantage with zipline access.",
+            "Filing cabinets hide blueprints.",
+            "Tools and 3D-printed parts scattered around.",
+            "Pedestals with missing sculptures.",
+            "Buzzing servers hum next to AC vents.",
+            "Ancient books and coded ledgers.",
+            "Surveillance feeds loop in sequence.",
+            "Docked crates for recent deliveries.",
+            "Interactive digital displays dimly lit.",
+            "Microwaves and unplugged vending machines.",
+            "Stacked shelves labeled with barcodes.",
+            "A desk covered in notes and hidden keys.",
+            "Glass ceiling lets moonlight beam in.",
+            "Cables tangle across floor tiles.",
+            "One switch controls every door in the museum."
+        };
+
+        rooms = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            rooms.add(new Room(roomNames[i], roomDescs[i]));
         }
 
-        // Connect rooms bidirectionally
-        for (int i = 0; i < rooms.size() - 1; i++) {
-            rooms.get(i).setExit("east", rooms.get(i + 1));
-            rooms.get(i + 1).setExit("west", rooms.get(i));
+        // Connect rooms logically
+        rooms.get(0).setExit("north", rooms.get(1));
+        rooms.get(1).setExit("east", rooms.get(2));
+        rooms.get(1).setExit("west", rooms.get(3));
+        rooms.get(3).setExit("north", rooms.get(4));
+        rooms.get(2).setExit("north", rooms.get(5));
+        rooms.get(4).setExit("east", rooms.get(6));
+        rooms.get(6).setExit("north", rooms.get(7));
+        rooms.get(7).setExit("east", rooms.get(8));
+        rooms.get(8).setExit("north", rooms.get(9));
+        rooms.get(5).setExit("west", rooms.get(10));
+        rooms.get(10).setExit("north", rooms.get(11));
+        rooms.get(11).setExit("east", rooms.get(12));
+        rooms.get(12).setExit("north", rooms.get(13));
+        rooms.get(13).setExit("east", rooms.get(14));
+        rooms.get(14).setExit("north", rooms.get(15));
+        rooms.get(15).setExit("east", rooms.get(16));
+        rooms.get(16).setExit("north", rooms.get(17));
+        rooms.get(17).setExit("east", rooms.get(18));
+        rooms.get(18).setExit("north", rooms.get(19));
+
+        // Define 40 unique items
+        String[][] items = {
+            {"laser mirror", "Redirects laser traps"},
+            {"emp device", "Disables nearby electronics", "true"},
+            {"glass cutter", "Removes panels without alerting alarms"},
+            {"blueprint", "Shows hidden exits on museum floorplan"},
+            {"infrared goggles", "Reveal motion sensors"},
+            {"pressure plate", "Simulates weight of stolen items"},
+            {"vault code", "A sticky note with a 4-digit pin"},
+            {"keycard alpha", "Opens west wing access panels"},
+            {"keycard beta", "Grants access to the server room"},
+            {"voice recorder", "Used to mimic guard commands"},
+            {"thermal drill", "Cuts through vault hinges"},
+            {"power cell", "Activates emergency systems"},
+            {"override chip", "Bypasses firmware locks"},
+            {"replica sculpture", "Swap for originals without triggering weight sensors"},
+            {"hacking tablet", "Exploits system vulnerabilities"},
+            {"zipline hook", "Traverse downward gaps"},
+            {"signal jammer", "Interrupts surveillance drones"},
+            {"coded ledger", "Contains key to decipher passphrases"},
+            {"sensor cloak", "Allows stealth movement for 5 seconds"},
+            {"adhesive pad", "Can fix mirrors in place"},
+            {"decoy badge", "Fools some card readers", "true"},
+            {"magnet tool", "Retrieves keys behind grates"},
+            {"night vision visor", "Lets you see when power is out"},
+            {"battery pack", "Recharges devices temporarily"},
+            {"multi-tool", "Swiss-army knife of heist tools"},
+            {"elevator override", "Allows access to restricted floors"},
+            {"admin password", "Overrides control panel logins"},
+            {"camera loop usb", "Plugs into feed to loop footage"},
+            {"surveillance map", "Shows blind spots"},
+            {"guard schedule", "Predicts patrol routes"},
+            {"vault fingerprint", "Synthetic mold of director’s thumb"},
+            {"maintenance radio", "Broadcasts static"},
+            {"art crate key", "Unlocks hidden compartments"},
+            {"ceiling harness", "Hooks to skylights"},
+            {"anti-static gloves", "Prevents fingerprint detection"},
+            {"dummy camera", "Fools motion sensors"},
+            {"biometric bypass", "Works on locked panels"},
+            {"wireless bug", "Transmits security updates"},
+            {"director's ring", "Unlocks his private safe"},
+            {"master override", "Universal key for all doors", "true"}
+        };
+
+        for (int i = 0; i < items.length; i++) {
+            String name = items[i][0];
+            String desc = items[i][1];
+            boolean combinable = items[i].length == 3 && Boolean.parseBoolean(items[i][2]);
+            rooms.get(i % rooms.size()).addItem(new Item(name, desc, combinable));
         }
 
-        // Create and distribute 40 unique items
-        String[] itemNames = {"lockpick", "blueprint", "grappling hook", "glass cutter", "usb stick", "keycard", "vault code", "diamond cutter",
-            "painting frame", "replica sculpture", "laser mirror", "EMP device", "camera jammer", "night vision goggles", "audio bug",
-            "suction cups", "security manual", "disguise kit", "thermal lens", "drill", "motion sensor disruptor", "staff badge",
-            "c4 charge", "magnetic glove", "invisible ink map", "infrared pen", "pressure plate", "fake ID", "vault schematics",
-            "power cell", "alarm code override", "ceiling harness", "flash drive", "crowbar", "microphone tap", "decoy sculpture",
-            "encrypted tablet", "art crate", "master key"};
+        // Add layered puzzles that span rooms and require specific or combined items
+        rooms.get(2).setPuzzle(new Puzzle(List.of("vault code", "thermal drill"), "A vault door secured with both code and bolts.", "You breach the vault with code and power."));
+        rooms.get(9).setPuzzle(new Puzzle(List.of("override chip", "admin password"), "Login console denies access.", "Root access granted."));
+        rooms.get(13).setPuzzle(new Puzzle(List.of("glass cutter", "replica sculpture"), "Case sealed with glass sensor.", "The item is swapped without alarm."));
+        rooms.get(18).setPuzzle(new Puzzle(List.of("director's ring"), "A hidden safe requiring special access.", "Click. The hidden safe unlocks."));
+        rooms.get(19).setPuzzle(new Puzzle(List.of("master override"), "Final door needs system-wide key.", "Every lock disengages silently."));
 
-        for (int i = 0; i < itemNames.length; i++) {
-            Item item = new Item(itemNames[i], "A tool for the heist: " + itemNames[i]);
-            rooms.get(i % rooms.size()).addItem(item);
-        }
-
-        // Add thematic puzzles
-        rooms.get(2).setPuzzle(new Puzzle("vault code", "A locked vault door. You need the vault code.", "The vault beeps and unlocks."));
-        rooms.get(6).setPuzzle(new Puzzle("grappling hook", "A ledge too high to reach.", "You scale the wall with your hook."));
-        rooms.get(10).setPuzzle(new Puzzle("EMP device", "A wall of active laser sensors.", "The lasers power down silently."));
-        rooms.get(14).setPuzzle(new Puzzle("fake ID", "An ID scanner blocks access.", "The scanner accepts your ID."));
-        rooms.get(18).setPuzzle(new Puzzle("master key", "A final locked chamber.", "The master key opens the chamber.") );
-
-        // Start player
+        // Initialize player
         player = new Player(rooms.get(0));
-        player.addItem(new Item("blueprint", "A layout of the entire museum."));
-        player.addItem(new Item("lockpick", "Useful for basic locks."));
+        player.addItem(new Item("blueprint", "Museum map for navigation"));
+        player.addItem(new Item("emp device", "Short-circuits devices", true));
+        player.addItem(new Item("decoy badge", "Fake access card", true));
     }
 }

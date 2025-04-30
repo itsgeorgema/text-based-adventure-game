@@ -8,12 +8,14 @@ public class Room {
     private Map<String, Room> exits;
     private List<Item> items;
     private Puzzle puzzle;
+    private boolean visited;
 
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
         this.exits = new HashMap<>();
         this.items = new ArrayList<>();
+        this.visited = false;
     }
 
     public void setExit(String direction, Room room) {
@@ -76,5 +78,13 @@ public class Room {
 
     public Puzzle getPuzzle() {
         return puzzle;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 }
