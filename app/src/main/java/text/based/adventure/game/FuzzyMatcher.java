@@ -7,17 +7,43 @@ public class FuzzyMatcher {
     public FuzzyMatcher(ArrayList<String> dictionary){
         this.dictionary = dictionary;
     }
-    public String getBestMatch(String input){
-        input=input.toLowerCase().trim();
+    public String getBestMatch(String input) {
+        input = input.toLowerCase().trim();
+        String[] inputWords = input.split("\\s+");
+        int inputWordCount = inputWords.length;
+    
         String bestMatch = null;
-        int bestDistance = Integer.MAX_VALUE;
-        for(String word: dictionary){
-            int distance=levenshteinDistance(input, word);
-            if(distance<bestDistance){
-                bestDistance=distance;
-                bestMatch=word;
+        double bestScore = Double.MAX_VALUE;
+    
+        for (String candidate : dictionary) {
+            candidate = candidate.toLowerCase().trim();
+            String[] candidateWords = candidate.split("\\s+");
+            int candidateWordCount = candidateWords.length;
+    
+            int distance = levenshteinDistance(input, candidate);
+            int wordCountPenalty = Math.abs(candidateWordCount - inputWordCount) * 2;
+            int lengthPenalty = Math.abs(candidate.length() - input.length()); // new: penalize extreme length differences
+    
+            // Reward overlapping words
+            int overlapBonus = 0;
+            for (String w1 : inputWords) {
+                for (String w2 : candidateWords) {
+                    if (w1.equals(w2)) {
+                        overlapBonus -= 1;
+                    }
+                }
+            }
+    
+            double score = distance + wordCountPenalty + lengthPenalty + overlapBonus;
+    
+            if (score < bestScore) {
+                bestScore = score;
+                bestMatch = candidate;
+    
+                if (score <= 1) break; // early exit if super close
             }
         }
+    
         return bestMatch;
     }
     public static int levenshteinDistance(String input, String word){

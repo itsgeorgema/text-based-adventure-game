@@ -1,21 +1,78 @@
 package text.based.adventure.game;
 
 import java.util.*;
+import java.io.IOException;
+import java.nio.file.*;
 
 public class Game {
     private Player player;
     private Scanner scanner;
     private List<Room> rooms;
+    private FuzzyMatcher fuzzyMatcher;
 
     public void start() {
         setupWorld();
         scanner = new Scanner(System.in);
         System.out.println("\nWelcome to the Art Heist Adventure! Type 'help' for commands.");
+        ArrayList<String> commandList = new ArrayList<>();
 
+        try {
+            commandList.addAll(Files.readAllLines(Paths.get("all_game_commands.txt")));
+        } catch (IOException e) {
+            System.out.println("Error loading commands:");
+            e.printStackTrace();
+        }
+    
+        fuzzyMatcher = new FuzzyMatcher(commandList);
         while (true) {
             System.out.print("\n> ");
             String input = scanner.nextLine().trim().toLowerCase();
 
+            // Step 1: check base commands
+            if (input.equals("look") || input.equals("items") || input.equals("inventory") ||
+                input.equals("help") || input.equals("quit")) {
+                // Proceed as normal
+            } else if (input.startsWith("go")) {
+                if (input.equals("go")) {
+                    System.out.println("Please specify a direction. Example: go north");
+                    continue;
+                }
+            } else if (input.startsWith("take")) {
+                if (input.equals("take")) {
+                    System.out.println("Please specify an item to take. Example: take blueprint");
+                    continue;
+                }
+            } else if (input.startsWith("use")) {
+                if (input.equals("use")) {
+                    System.out.println("Please specify an item to use. Example: use emp device");
+                    continue;
+                }
+            } else if (input.startsWith("inspect")) {
+                if (input.equals("inspect")) {
+                    System.out.println("Please specify an item to inspect. Example: inspect glass cutter");
+                    continue;
+                }
+            } else if (input.startsWith("combine")) {
+                if (!input.contains(" with ")) {
+                    System.out.println("Use format: combine [item1] with [item2]");
+                    continue;
+                }
+            } else {
+                String corrected = fuzzyMatcher.getBestMatch(input);
+                if (corrected == null) {
+                    System.out.println("I didn't understand that. Try 'help' to see commands.");
+                    continue;
+                } else if (!corrected.equals(input)) {
+                    System.out.println("Did you mean: '" + corrected + "'? [y/N]");
+                    String confirm = scanner.nextLine().trim().toLowerCase();
+                    if (confirm.equals("y")) {
+                        input = corrected;
+                    } else {
+                        continue;
+                    }
+                }}
+
+            // Existing command logic below
             if (input.equals("quit")) {
                 System.out.println("Thanks for playing!");
                 break;
@@ -23,6 +80,10 @@ public class Game {
                 System.out.println(player.getCurrentRoom().getFullDescription());
             } else if (input.equals("items")) {
                 player.getCurrentRoom().listItems();
+            } else if (input.equals("inventory")) {
+                player.showInventory();
+            } else if (input.equals("help")) {
+                System.out.println("Commands: go [direction], look, items, take [item], use [item], inspect [item], combine [item1] with [item2], inventory, help, quit");
             } else if (input.startsWith("go ")) {
                 player.move(input.substring(3));
             } else if (input.startsWith("take ")) {
@@ -38,12 +99,8 @@ public class Game {
                 } else {
                     System.out.println("Use format: combine [item1] with [item2]");
                 }
-            } else if (input.equals("inventory")) {
-                player.showInventory();
-            } else if (input.equals("help")) {
-                System.out.println("Commands: go [direction], look, items, take [item], use [item], inspect [item], combine [item1] with [item2], inventory, help, quit");
             } else {
-                System.out.println("I don't understand that.");
+                System.out.println("Unknown command.");
             }
         }
     }

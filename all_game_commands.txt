@@ -1,0 +1,161 @@
+go north
+go south
+go east
+go west
+go up
+go down
+look
+items
+inventory
+help
+quit
+take laser mirror
+use laser mirror
+inspect laser mirror
+take emp device
+use emp device
+inspect emp device
+take glass cutter
+use glass cutter
+inspect glass cutter
+take blueprint
+use blueprint
+inspect blueprint
+take infrared goggles
+use infrared goggles
+inspect infrared goggles
+take pressure plate
+use pressure plate
+inspect pressure plate
+take vault code
+use vault code
+inspect vault code
+take keycard alpha
+use keycard alpha
+inspect keycard alpha
+take keycard beta
+use keycard beta
+inspect keycard beta
+take voice recorder
+use voice recorder
+inspect voice recorder
+take thermal drill
+use thermal drill
+inspect thermal drill
+take power cell
+use power cell
+inspect power cell
+take override chip
+use override chip
+inspect override chip
+take replica sculpture
+use replica sculpture
+inspect replica sculpture
+take hacking tablet
+use hacking tablet
+inspect hacking tablet
+take zipline hook
+use zipline hook
+inspect zipline hook
+take signal jammer
+use signal jammer
+inspect signal jammer
+take coded ledger
+use coded ledger
+inspect coded ledger
+take sensor cloak
+use sensor cloak
+inspect sensor cloak
+take adhesive pad
+use adhesive pad
+inspect adhesive pad
+take decoy badge
+use decoy badge
+inspect decoy badge
+take magnet tool
+use magnet tool
+inspect magnet tool
+take night vision visor
+use night vision visor
+inspect night vision visor
+take battery pack
+use battery pack
+inspect battery pack
+take multi-tool
+use multi-tool
+inspect multi-tool
+take elevator override
+use elevator override
+inspect elevator override
+take admin password
+use admin password
+inspect admin password
+take camera loop usb
+use camera loop usb
+inspect camera loop usb
+take surveillance map
+use surveillance map
+inspect surveillance map
+take guard schedule
+use guard schedule
+inspect guard schedule
+take vault fingerprint
+use vault fingerprint
+inspect vault fingerprint
+take maintenance radio
+use maintenance radio
+inspect maintenance radio
+take art crate key
+use art crate key
+inspect art crate key
+take ceiling harness
+use ceiling harness
+inspect ceiling harness
+take anti-static gloves
+use anti-static gloves
+inspect anti-static gloves
+take dummy camera
+use dummy camera
+inspect dummy camera
+take biometric bypass
+use biometric bypass
+inspect biometric bypass
+take wireless bug
+use wireless bug
+inspect wireless bug
+take director's ring
+use director's ring
+inspect director's ring
+take master override
+use master override
+inspect master override
+combine laser mirror with emp device
+combine laser mirror with glass cutter
+combine laser mirror with blueprint
+combine laser mirror with infrared goggles
+combine laser mirror with pressure plate
+combine laser mirror with vault code
+combine laser mirror with keycard alpha
+combine laser mirror with keycard beta
+combine laser mirror with voice recorder
+combine laser mirror with thermal drill
+combine laser mirror with power cell
+combine laser mirror with override chip
+combine laser mirror with replica sculpture
+combine laser mirror with hacking tablet
+combine laser mirror with zipline hook
+combine laser mirror with signal jammer
+combine laser mirror with coded ledger
+combine laser mirror with sensor cloak
+combine laser mirror with adhesive pad
+combine laser mirror with decoy badge
+combine laser mirror with magnet tool
+combine laser mirror with night vision visor
+combine laser mirror with battery pack
+combine laser mirror with multi-tool
+combine laser mirror with elevator override
+combine laser mirror with admin password
+combine laser mirror with camera loop usb
+combine laser mirror with surveillance map
+combine laser mirror with guard schedule
+combine laser mirror with vault fingerprint
