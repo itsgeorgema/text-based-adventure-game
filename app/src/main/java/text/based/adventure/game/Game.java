@@ -9,7 +9,7 @@ public class Game {
     public void start() {
         setupWorld();
         scanner = new Scanner(System.in);
-        System.out.println("Welcome to Zork Advanced! Type 'help' for a list of commands.");
+        System.out.println("Welcome to the Dungeon! Type 'help' for a list of commands.");
 
         while (true) {
             System.out.print("\n> ");
