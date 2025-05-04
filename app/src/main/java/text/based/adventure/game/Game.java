@@ -13,7 +13,28 @@ public class Game {
     public void start() {
         setupWorld();
         scanner = new Scanner(System.in);
-        System.out.println("\nWelcome to the Art Heist Adventure! Type 'help' for commands.");
+        System.out.println("""
+===========================
+  ART HEIST ADVENTURE
+===========================
+
+You are an elite infiltrator hired to break into the most secure art museum in the world. You are breaking in during the middle of the night when the museum is closed to maximize stealth.
+
+🎯 Objective:
+Navigate undetected through rooms, avoid advanced security systems, and retrieve the priceless artifact locked behind a multi-layered vault system.
+
+📍 Starting Location:
+You are in the Foyer — the marble-floored entry of the museum. Use the blueprint in your inventory to plan your movements.
+
+🧩 What to Do:
+- Explore rooms using commands like 'go north', 'take blueprint', or 'inspect item'
+- Use or combine the right items to bypass puzzles and unlock new rooms
+- Solve layered puzzles to reach the final control room
+- Type 'help' to see all available commands
+- Type 'quit' anytime to exit the game
+
+Good luck. The museum be closed for long...
+""");
         ArrayList<String> commandList = new ArrayList<>();
 
         try {
