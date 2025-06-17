@@ -41,3 +41,41 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+// Configure logging to suppress progress bar
+logging.captureStandardOutput LogLevel.INFO
+
+// Configure the run task to handle console input properly
+run {
+    // Set logging level to QUIET to suppress Gradle output
+    logging.captureStandardOutput LogLevel.QUIET
+    logging.captureStandardError LogLevel.QUIET
+    
+    // Ensure standard input is available for the application
+    standardInput = System.in
+    
+    // Enable terminal input for better user experience
+    jvmArgs = [
+        "-Dfile.encoding=UTF-8",
+        "-Djava.awt.headless=true",
+        "-Dorg.gradle.daemon=false",
+        "-Dorg.gradle.console=plain"
+    ]
+    
+    // Show instructions to the user before starting the game
+    doFirst {
+        // Use quiet output only for our message
+        println("\nStarting Art Heist Adventure game...\n")
+        println("To play: Type commands like 'look', 'go north', etc. after the '>' prompt.\n")
+    }
+    
+    // Create a shell script to run the game directly
+    doLast {
+        def scriptFile = new File("${rootProject.projectDir}/run_game.sh")
+        scriptFile.text = """#!/bin/bash
+java -cp "${project.buildDir}/classes/java/main" text.based.adventure.game.App
+"""
+        scriptFile.setExecutable(true)
+        println("\nFor better terminal experience, you can also run the game using: ./run_game.sh\n")
+    }
+}

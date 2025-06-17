@@ -2,13 +2,17 @@ go north
 go south
 go east
 go west
-go up
-go down
 look
 items
 inventory
 help
 quit
+map
+hint
+take
+use
+inspect
+combine
 take laser mirror
 use laser mirror
 inspect laser mirror
@@ -48,12 +52,6 @@ inspect power cell
 take override chip
 use override chip
 inspect override chip
-take replica sculpture
-use replica sculpture
-inspect replica sculpture
-take hacking tablet
-use hacking tablet
-inspect hacking tablet
 take zipline hook
 use zipline hook
 inspect zipline hook
@@ -129,33 +127,6 @@ inspect director's ring
 take master override
 use master override
 inspect master override
-combine laser mirror with emp device
-combine laser mirror with glass cutter
-combine laser mirror with blueprint
-combine laser mirror with infrared goggles
-combine laser mirror with pressure plate
-combine laser mirror with vault code
-combine laser mirror with keycard alpha
-combine laser mirror with keycard beta
-combine laser mirror with voice recorder
-combine laser mirror with thermal drill
-combine laser mirror with power cell
-combine laser mirror with override chip
-combine laser mirror with replica sculpture
-combine laser mirror with hacking tablet
-combine laser mirror with zipline hook
-combine laser mirror with signal jammer
-combine laser mirror with coded ledger
-combine laser mirror with sensor cloak
-combine laser mirror with adhesive pad
-combine laser mirror with decoy badge
-combine laser mirror with magnet tool
-combine laser mirror with night vision visor
-combine laser mirror with battery pack
-combine laser mirror with multi-tool
-combine laser mirror with elevator override
-combine laser mirror with admin password
-combine laser mirror with camera loop usb
-combine laser mirror with surveillance map
-combine laser mirror with guard schedule
-combine laser mirror with vault fingerprint
+combine emp device with decoy badge
+combine thermal drill with power cell
+combine glass cutter with adhesive pad

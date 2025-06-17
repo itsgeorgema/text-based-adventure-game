@@ -31,6 +31,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return name + ": " + description;
+        String symbol = combinable ? "🔄 " : "🔍 ";
+        return symbol + name + ": " + description;
     }
 }
