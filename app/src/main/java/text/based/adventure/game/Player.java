@@ -525,24 +525,14 @@ public class Player {
             if (!next.isVisited()) {
                 next.setVisited(true);
                 System.out.println("\n🚶 You move " + direction + " into a new area...");
-                System.out.println(next.getFullDescription());
+                // Show brief description on first visit
+                System.out.println(next.getBriefDescription());
+                // Hint to look around
+                System.out.println("\n� Type 'look' to examine your surroundings in detail.");
             } else {
-                System.out.println("\n🚶 You return to the " + next.getName());
-                // Give a shorter description for visited rooms, but keep it engaging
-                System.out.println("📍 " + next.getName().toUpperCase() + " 📍");
-                System.out.println(next.getDescription());
-                
-                // Show items with emoji for better visual impact
-                if (!next.getItems().isEmpty()) {
-                    System.out.println("\n👜 You see:");
-                    for (Item item : next.getItems()) {
-                        String itemSymbol = item.isCombinable() ? "🔄" : "🔍";
-                        System.out.println(itemSymbol + " " + item.getName());
-                    }
-                }
-                
-                // Show available exits with direction symbols
-                System.out.println("\n🚪 Exits: " + currentRoom.getFormattedExits());
+                System.out.println("\n� You return to the " + next.getName());
+                // Brief description for all rooms now
+                System.out.println(next.getBriefDescription());
                 
                 // Remind about puzzle if applicable
                 if (next.getPuzzle() != null && !next.getPuzzle().isSolved()) {

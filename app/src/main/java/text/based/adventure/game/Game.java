@@ -132,10 +132,10 @@ Good luck. The museum won't be closed for long...
     private void gameLoop() {
         // Show welcome message and initial room description
         System.out.println("\nWelcome to the Art Heist Adventure! You are now in the museum...");
-        System.out.println("\n" + player.getCurrentRoom().getFullDescription());
+        System.out.println("\n" + player.getCurrentRoom().getBriefDescription());
         
         // Give an initial nudge to the player
-        System.out.println("\n💡 Hint: Try using 'look' to examine your surroundings and 'inventory' to see what you have.");
+        System.out.println("\n💡 Hint: Try using 'look' to examine your surroundings in detail and 'inventory' to see what you have.");
         
         // Main game loop
         boolean gameRunning = true;

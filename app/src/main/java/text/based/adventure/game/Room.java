@@ -230,4 +230,20 @@ public class Room {
         
         return sb.toString();
     }
+    
+    /**
+     * Returns a brief description of the room, showing only name and description.
+     * Used when moving between rooms without the 'look' command.
+     */
+    public String getBriefDescription() {
+        StringBuilder sb = new StringBuilder();
+        
+        // Room name with enhanced formatting
+        sb.append("📍 ").append(name.toUpperCase()).append(" 📍\n");
+        sb.append("===================================\n");
+        
+        // Room description only
+        sb.append(description);
+        return sb.toString();
+    }
 }
