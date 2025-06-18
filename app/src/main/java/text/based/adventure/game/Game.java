@@ -416,56 +416,58 @@ Good luck. The museum won't be closed for long...
         rooms.get(17).setExit("east", rooms.get(18));
         rooms.get(18).setExit("north", rooms.get(19));
 
-        // Define 40 unique items
-        String[][] items = {
-            {"laser mirror", "Redirects laser traps"},
-            {"emp device", "Disables nearby electronics", "true"},
-            {"glass cutter", "Removes panels without alerting alarms"},
-            {"blueprint", "Shows hidden exits on museum floorplan"},
-            {"infrared goggles", "Reveal motion sensors"},
-            {"pressure plate", "Simulates weight of stolen items"},
-            {"vault code", "A sticky note with a 4-digit pin"},
-            {"keycard alpha", "Opens west wing access panels"},
-            {"keycard beta", "Grants access to the server room"},
-            {"voice recorder", "Used to mimic guard commands"},
-            {"thermal drill", "Cuts through vault hinges"},
-            {"power cell", "Activates emergency systems"},
-            {"override chip", "Bypasses firmware locks"},
-            {"replica sculpture", "Swap for originals without triggering weight sensors"},
-            {"hacking tablet", "Exploits system vulnerabilities"},
-            {"zipline hook", "Traverse downward gaps"},
-            {"signal jammer", "Interrupts surveillance drones"},
-            {"coded ledger", "Contains key to decipher passphrases"},
-            {"sensor cloak", "Allows stealth movement for 5 seconds"},
-            {"adhesive pad", "Can fix mirrors in place"},
-            {"decoy badge", "Fools some card readers", "true"},
-            {"magnet tool", "Retrieves keys behind grates"},
-            {"night vision visor", "Lets you see when power is out"},
-            {"battery pack", "Recharges devices temporarily"},
-            {"multi-tool", "Swiss-army knife of heist tools"},
-            {"elevator override", "Allows access to restricted floors"},
-            {"admin password", "Overrides control panel logins"},
-            {"camera loop usb", "Plugs into feed to loop footage"},
-            {"surveillance map", "Shows blind spots"},
-            {"guard schedule", "Predicts patrol routes"},
-            {"vault fingerprint", "Synthetic mold of director's thumb"},
-            {"maintenance radio", "Broadcasts static"},
-            {"art crate key", "Unlocks hidden compartments"},
-            {"ceiling harness", "Hooks to skylights"},
-            {"anti-static gloves", "Prevents fingerprint detection"},
-            {"dummy camera", "Fools motion sensors"},
-            {"biometric bypass", "Works on locked panels"},
-            {"wireless bug", "Transmits security updates"},
-            {"director's ring", "Unlocks his private safe"},
-            {"master override", "Universal key for all doors", "true"}
-        };
-
-        for (int i = 0; i < items.length; i++) {
-            String name = items[i][0];
-            String desc = items[i][1];
-            boolean combinable = items[i].length == 3 && Boolean.parseBoolean(items[i][2]);
-            rooms.get(i % rooms.size()).addItem(new Item(name, desc, combinable));
+        // Clear any existing items
+        for (Room room : rooms) {
+            room.clearItems();
         }
+
+        // Place items according to the walkthrough and museum layout
+        // Foyer - Room 0
+        rooms.get(0).addItem(new Item("laser mirror", "Redirects laser traps"));
+        rooms.get(0).addItem(new Item("decoy badge", "Fools some card readers", true));
+
+        // Gallery - Room 1
+        rooms.get(1).addItem(new Item("thermal drill", "Cuts through vault hinges", true));
+
+        // Security Office - Room 3
+        rooms.get(3).addItem(new Item("infrared goggles", "Reveal motion sensors"));
+
+        // Atrium - Room 4
+        rooms.get(4).addItem(new Item("override chip", "Bypasses firmware locks", true));
+
+        // Archives - Room 6
+        rooms.get(6).addItem(new Item("power cell", "Activates emergency systems", true));
+
+        // Workshop - Room 7
+        rooms.get(7).addItem(new Item("zipline hook", "Traverse downward gaps"));
+
+        // Hall of Sculptures - Room 8
+        rooms.get(8).addItem(new Item("admin password", "Overrides control panel logins"));
+
+        // Server Room - Room 9
+        rooms.get(9).addItem(new Item("biometric bypass", "Works on locked panels"));
+
+        // Storage Room - Room 15
+        rooms.get(15).addItem(new Item("master override", "Universal key for all doors", true));
+
+        // Director's Office - Room 16
+        rooms.get(16).addItem(new Item("director's ring", "Unlocks his private safe"));
+
+        // IT Closet - Room 18
+        rooms.get(18).addItem(new Item("camera loop usb", "Plugs into feed to loop footage"));
+
+        // Add other useful items to remaining rooms
+        rooms.get(2).addItem(new Item("vault code", "A sticky note with a 4-digit pin"));
+        rooms.get(5).addItem(new Item("glass cutter", "Removes panels without alerting alarms", true));
+        rooms.get(10).addItem(new Item("coded ledger", "Contains key to decipher passphrases"));
+        rooms.get(11).addItem(new Item("surveillance map", "Shows blind spots"));
+        rooms.get(12).addItem(new Item("art crate key", "Unlocks hidden compartments"));
+        rooms.get(13).addItem(new Item("night vision visor", "Lets you see when power is out"));
+        rooms.get(14).addItem(new Item("multi-tool", "Swiss-army knife of heist tools"));
+        rooms.get(17).addItem(new Item("wireless bug", "Transmits security updates"));
+        
+        // Other items that can be added to player inventory through combinations
+        // These items are not initially placed in rooms
 
         // Add layered puzzles that span rooms and require specific or combined items
         rooms.get(2).setPuzzle(new Puzzle(List.of("vault code", "thermal drill"), "A vault door secured with both code and bolts.", "You breach the vault with code and power."));
@@ -474,11 +476,10 @@ Good luck. The museum won't be closed for long...
         rooms.get(18).setPuzzle(new Puzzle(List.of("director's ring"), "A hidden safe requiring special access.", "Click. The hidden safe unlocks."));
         rooms.get(19).setPuzzle(new Puzzle(List.of("master override"), "Final door needs system-wide key.", "Every lock disengages silently."));
 
-        // Initialize player
+        // Initialize player with starting inventory according to the walkthrough
         player = new Player(rooms.get(0));
         player.addItem(new Item("blueprint", "Museum map for navigation"));
         player.addItem(new Item("emp device", "Short-circuits devices", true));
-        player.addItem(new Item("decoy badge", "Fake access card", true));
     }
     
     // New method to display a map of visited rooms

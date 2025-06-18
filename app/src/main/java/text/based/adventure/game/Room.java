@@ -246,4 +246,11 @@ public class Room {
         sb.append(description);
         return sb.toString();
     }
+    
+    /**
+     * Clear all items from the room
+     */
+    public void clearItems() {
+        items.clear();
+    }
 }
