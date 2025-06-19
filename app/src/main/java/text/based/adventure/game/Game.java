@@ -511,6 +511,7 @@ public class Game {
     private void showMap() {
         System.out.println("\n📍 MUSEUM MAP 📍");
         System.out.println("(Visited rooms are marked with ✓)");
+        System.out.println("(YOUR CURRENT LOCATION is marked with 🔸)");
         System.out.println("-----------------------------------------");
         
         // Create a map that matches the actual room connections
@@ -537,15 +538,15 @@ public class Game {
             {"", "", "OFFICE", "", "", "", "", "", "", "", "SCULPTURES", "", "", "", ""},
         };
 
-        // Mark visited rooms
+        // First mark visited rooms
         for (Room room : rooms) {
-            if (room.isVisited()) {
-                markRoomOnMap(mapLines, room.getName() + " ✓");
+            if (room.isVisited() && room != player.getCurrentRoom()) {
+                updateMapCell(mapLines, room.getName(), "✓");
             }
         }
         
-        // Mark current room with a player symbol
-        markRoomOnMap(mapLines, player.getCurrentRoom().getName() + " 🔸");
+        // Then mark current room with a player symbol
+        updateMapCell(mapLines, player.getCurrentRoom().getName(), "🔸");
         
         // Display the map
         for (String[] line : mapLines) {
@@ -555,8 +556,8 @@ public class Game {
         System.out.println("-----------------------------------------");
     }
     
-    // Helper method to mark a room on the map
-    private void markRoomOnMap(String[][] map, String roomName) {
+    // Helper method to update a map cell with a marker
+    private void updateMapCell(String[][] map, String roomName, String marker) {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 String cell = map[i][j];
@@ -565,37 +566,39 @@ public class Game {
                     !cell.equals("→") && !cell.equals("←") && 
                     !cell.equals("↑") && !cell.equals("↓")) {
                     
-                    // Get the base room name without markers
-                    String roomBaseName = roomName.contains(" ✓") ? roomName.substring(0, roomName.indexOf(" ✓")) : 
-                                         (roomName.contains(" 🔸") ? roomName.substring(0, roomName.indexOf(" 🔸")) : roomName);
-                    
                     // Normalize strings for comparison
                     String normalizedCell = cell.toUpperCase().replace(" ", "");
-                    String normalizedBaseName = roomBaseName.toUpperCase().replace(" ", "");
+                    String normalizedRoomName = roomName.toUpperCase().replace(" ", "");
                     
                     // Handle specific room matches
-                    if ((normalizedCell.equals("FOYER") && normalizedBaseName.equals("FOYER")) ||
-                        (normalizedCell.equals("GALLERY") && normalizedBaseName.equals("GALLERY")) ||
-                        (normalizedCell.equals("VAULT") && normalizedBaseName.equals("VAULT")) ||
-                        (normalizedCell.equals("SECURITY") && normalizedBaseName.equals("SECURITYOFFICE")) ||
-                        (normalizedCell.equals("OFFICE") && normalizedBaseName.equals("SECURITYOFFICE")) ||
-                        (normalizedCell.equals("ATRIUM") && normalizedBaseName.equals("ATRIUM")) ||
-                        (normalizedCell.equals("ARCHIVES") && normalizedBaseName.equals("ARCHIVES")) ||
-                        (normalizedCell.equals("WORKSHOP") && normalizedBaseName.equals("WORKSHOP")) ||
-                        (normalizedCell.equals("HALLOF") && normalizedBaseName.equals("HALLOFSCULPTURES")) ||
-                        (normalizedCell.equals("SCULPTURES") && normalizedBaseName.equals("HALLOFSCULPTURES")) ||
-                        (normalizedCell.equals("SERVERROOM") && normalizedBaseName.equals("SERVERROOM")) ||
-                        (normalizedCell.equals("ROOFTOP") && normalizedBaseName.equals("ROOFTOP")) ||
-                        (normalizedCell.equals("LIBRARY") && normalizedBaseName.equals("LIBRARY")) ||
-                        (normalizedCell.equals("SURVEILLANCE") && normalizedBaseName.equals("SURVEILLANCEROOM")) ||
-                        (normalizedCell.equals("LOADINGDOCK") && normalizedBaseName.equals("LOADINGDOCK")) ||
-                        (normalizedCell.equals("EXHIBITHALL") && normalizedBaseName.equals("EXHIBITHALL")) ||
-                        (normalizedCell.equals("BREAKROOM") && normalizedBaseName.equals("BREAKROOM")) ||
-                        (normalizedCell.equals("STORAGEROOM") && normalizedBaseName.equals("STORAGEROOM")) ||
-                        (normalizedCell.equals("DIRECTOR'SOFFICE") && normalizedBaseName.equals("DIRECTOR'SOFFICE")) ||
-                        (normalizedCell.equals("ITCLOSET") && normalizedBaseName.equals("ITCLOSET")) ||
-                        (normalizedCell.equals("CONTROLROOM") && normalizedBaseName.equals("CONTROLROOM"))) {
-                        map[i][j] = roomName;
+                    if ((normalizedCell.equals("FOYER") && normalizedRoomName.equals("FOYER")) ||
+                        (normalizedCell.equals("GALLERY") && normalizedRoomName.equals("GALLERY")) ||
+                        (normalizedCell.equals("VAULT") && normalizedRoomName.equals("VAULT")) ||
+                        (normalizedCell.equals("SECURITY") && normalizedRoomName.equals("SECURITYOFFICE")) ||
+                        (normalizedCell.equals("OFFICE") && normalizedRoomName.equals("SECURITYOFFICE")) ||
+                        (normalizedCell.equals("ATRIUM") && normalizedRoomName.equals("ATRIUM")) ||
+                        (normalizedCell.equals("ARCHIVES") && normalizedRoomName.equals("ARCHIVES")) ||
+                        (normalizedCell.equals("WORKSHOP") && normalizedRoomName.equals("WORKSHOP")) ||
+                        (normalizedCell.equals("HALLOF") && normalizedRoomName.equals("HALLOFSCULPTURES")) ||
+                        (normalizedCell.equals("SCULPTURES") && normalizedRoomName.equals("HALLOFSCULPTURES")) ||
+                        (normalizedCell.equals("SERVERROOM") && normalizedRoomName.equals("SERVERROOM")) ||
+                        (normalizedCell.equals("ROOFTOP") && normalizedRoomName.equals("ROOFTOP")) ||
+                        (normalizedCell.equals("LIBRARY") && normalizedRoomName.equals("LIBRARY")) ||
+                        (normalizedCell.equals("SURVEILLANCE") && normalizedRoomName.equals("SURVEILLANCEROOM")) ||
+                        (normalizedCell.equals("LOADINGDOCK") && normalizedRoomName.equals("LOADINGDOCK")) ||
+                        (normalizedCell.equals("EXHIBITHALL") && normalizedRoomName.equals("EXHIBITHALL")) ||
+                        (normalizedCell.equals("BREAKROOM") && normalizedRoomName.equals("BREAKROOM")) ||
+                        (normalizedCell.equals("STORAGEROOM") && normalizedRoomName.equals("STORAGEROOM")) ||
+                        (normalizedCell.equals("DIRECTOR'SOFFICE") && normalizedRoomName.equals("DIRECTOR'SOFFICE")) ||
+                        (normalizedCell.equals("ITCLOSET") && normalizedRoomName.equals("ITCLOSET")) ||
+                        (normalizedCell.equals("CONTROLROOM") && normalizedRoomName.equals("CONTROLROOM"))) {
+                        
+                        // For current room (🔸), add marker
+                        if (marker.equals("🔸")) {
+                            map[i][j] = cell + " " + marker;
+                        } else {
+                            map[i][j] = cell + " " + marker;
+                        }
                         return;
                     }
                 }
