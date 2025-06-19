@@ -1,6 +1,7 @@
 package text.based.adventure.game;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player {
     private Room currentRoom;
@@ -213,7 +214,7 @@ public class Player {
                     // Get other combinable items
                     List<Item> otherCombinables = inventory.stream()
                         .filter(i -> i != item && i.isCombinable())
-                        .toList();
+                        .collect(Collectors.toList());
                     
                     if (!otherCombinables.isEmpty()) {
                         if (otherCombinables.size() <= 3) {
@@ -243,8 +244,8 @@ public class Player {
         System.out.println("You don't see any '" + name + "' here or in your inventory.");
         
         // Suggest similar items if available
-        List<String> inventoryItemNames = inventory.stream().map(Item::getName).toList();
-        List<String> roomItemNames = currentRoom.getItems().stream().map(Item::getName).toList();
+        List<String> inventoryItemNames = inventory.stream().map(Item::getName).collect(Collectors.toList());
+        List<String> roomItemNames = currentRoom.getItems().stream().map(Item::getName).collect(Collectors.toList());
         
         // Check for similar item names to help the player
         String closestMatch = findClosestMatch(name, inventoryItemNames, roomItemNames);
@@ -493,11 +494,22 @@ public class Player {
                     System.out.println("- " + exit + " " + symbol);
                 }
             }
-        } else if (next.getPuzzle() != null && !next.getPuzzle().isSolved()) {
-            System.out.println("\n🚫 Blocked: " + next.getPuzzle().getHint());
+        } else if ((next.getName().equals("Vault") && next.getPuzzle() != null && !next.getPuzzle().isSolved()) || 
+                  (currentRoom.getName().equals("Hall of Sculptures") && direction.equals("north") && currentRoom.getPuzzle() != null && !currentRoom.getPuzzle().isSolved()) ||
+                  (currentRoom.getName().equals("IT Closet") && direction.equals("north") && currentRoom.getPuzzle() != null && !currentRoom.getPuzzle().isSolved())) {
+            
+            // Determine which puzzle is blocking the exit
+            Puzzle blockingPuzzle = null;
+            if (next.getName().equals("Vault") && next.getPuzzle() != null) {
+                blockingPuzzle = next.getPuzzle();
+            } else {
+                blockingPuzzle = currentRoom.getPuzzle();
+            }
+            
+            System.out.println("\n🚫 Blocked: " + blockingPuzzle.getHint());
             // Add hints about puzzle requirements
-            Set<String> requiredItems = next.getPuzzle().getRequiredItems();
-            Set<String> usedItems = next.getPuzzle().getUsedItems();
+            Set<String> requiredItems = blockingPuzzle.getRequiredItems();
+            Set<String> usedItems = blockingPuzzle.getUsedItems();
             
             if (!requiredItems.isEmpty()) {
                 // Check if player has any of the required items
@@ -566,7 +578,7 @@ public class Player {
             // Suggest similar items in inventory
             if (!inventory.isEmpty()) {
                 String closestMatch = findClosestMatch(itemName, 
-                    inventory.stream().map(Item::getName).toList(), 
+                    inventory.stream().map(Item::getName).collect(Collectors.toList()), 
                     new ArrayList<>());
                 
                 if (closestMatch != null) {
@@ -577,21 +589,76 @@ public class Player {
             return;
         }
         
-        // Now try to use the item on a puzzle
+        // Always use the correct case from the item in inventory, not the user input
+        String actualItemName = usedItem.getName();
+        
+        // Special win condition when using master override in Control Room
+        if (currentRoom.getName().equals("Control Room") && actualItemName.equalsIgnoreCase("master override")) {
+            System.out.println("\nYou carefully connect the master override device to the control panel...");
+            System.out.println("The security systems flicker momentarily as the device interfaces with the mainframe.");
+            System.out.println("A series of beeps confirms successful connection, and all security measures deactivate.");
+            
+            System.out.println("\n🎉 CONGRATULATIONS! 🎉");
+            System.out.println("You've successfully completed the museum heist!");
+            System.out.println("With the security system disabled, you can now escape with your prize.");
+            
+            // Ask if the player wants to play again
+            System.out.println("\nWould you like to play again? [y/N]");
+            
+            // Use the Game class's scanner to avoid input issues
+            String again = "n";
+            try (Scanner scanner = new Scanner(System.in)) {
+                again = scanner.nextLine().trim().toLowerCase();
+            } catch (Exception e) {
+                System.out.println("Error reading input. Assuming 'n'.");
+            }
+            
+            if (again.equals("y")) {
+                System.out.println("\nRestarting the game...\n");
+                // Call setupWorld through reflection since we don't have direct access to Game
+                try {
+                    // Get currently running game instance through player's current room
+                    for (Room room : getAllRooms()) {
+                        if (room.getName().equals("Foyer")) {
+                            setCurrentRoom(room);
+                            System.out.println(
+                                "===========================" + "\n" +
+                                "  ART HEIST ADVENTURE" + "\n" +
+                                "===========================" + "\n"
+                            );
+                            System.out.println("You are back at the " + getCurrentRoom().getName());
+                            System.out.println(getCurrentRoom().getFullDescription());
+                            return;
+                        }
+                    }
+                } catch (Exception e) {
+                    // If reflection failed, exit the game
+                    System.out.println("Error restarting game: " + e.getMessage());
+                    System.exit(0);
+                }
+            } else {
+                System.out.println("\nThanks for playing!");
+                System.exit(0); // Ensure clean exit
+            }
+            return;
+        }
+        
+        // Try to use the item on a puzzle
         Puzzle puzzle = currentRoom.getPuzzle();
         if (puzzle != null && !puzzle.isSolved()) {
-            System.out.println("\nYou attempt to use the " + usedItem.getName() + "...");
+            System.out.println("\nYou attempt to use the " + actualItemName + "...");
             
-            if (puzzle.trySolve(itemName)) {
+            // Make sure we use the exact name but in lowercase as required by the puzzle
+            if (puzzle.trySolve(actualItemName)) {
                 if (puzzle.isSolved()) {
                     System.out.println("\n✅ SUCCESS! " + puzzle.getSolvedMessage());
                     
-                    // If this was the last puzzle in the path to the win condition
+                    // If this was the last puzzle in the path to the final room
                     if (currentRoom.getName().equals("IT Closet") && 
-                        currentRoom.getExits().containsKey("north") && 
-                        currentRoom.getExit("north").getName().equals("Control Room")) {
+                        currentRoom.getExits().containsKey("south") && 
+                        currentRoom.getExit("south").getName().equals("Control Room")) {
                         
-                        System.out.println("\nThe path to the Control Room is now open. Victory is within your grasp!");
+                        System.out.println("\nThe path to the Control Room is now open. You're getting closer to your goal!");
                     }
                 } else {
                     // Provide feedback on partial progress
@@ -599,7 +666,8 @@ public class Player {
                     int total = puzzle.getRequiredItems().size();
                     
                     System.out.println("\n⚙️ PARTIAL SUCCESS!");
-                    System.out.println("You used the " + itemName + " correctly. (" + completed + "/" + total + " steps completed)");
+                    System.out.println("You used the " + actualItemName + " correctly. (" + completed + "/" + total + " steps completed)");
+                    System.out.println("You'll need " + (total - completed) + " more components to solve this puzzle.");
                     
                     // Give a hint about what else might be needed
                     for (String requiredItem : puzzle.getRequiredItems()) {
@@ -614,8 +682,8 @@ public class Player {
                 System.out.println("\n❌ That doesn't seem to work here.");
                 
                 // Check if the item was already used
-                if (puzzle.getUsedItems().contains(itemName.toLowerCase())) {
-                    System.out.println("You've already used the " + itemName + " on this puzzle.");
+                if (puzzle.getUsedItems().contains(actualItemName.toLowerCase())) {
+                    System.out.println("You've already used the " + actualItemName + " on this puzzle.");
                 } else {
                     System.out.println("This puzzle requires different tools.");
                     
@@ -630,11 +698,11 @@ public class Player {
             }
         } else {
             // Give special responses for certain items
-            if (itemName.equalsIgnoreCase("blueprint")) {
+            if (actualItemName.equalsIgnoreCase("blueprint")) {
                 System.out.println("\nYou unfold the blueprint and study the museum layout.");
                 System.out.println("This should help you understand how the rooms are connected.");
                 System.out.println("Try using the 'map' command to see a visual representation.");
-            } else if (itemName.equalsIgnoreCase("infrared goggles")) {
+            } else if (actualItemName.equalsIgnoreCase("infrared goggles")) {
                 System.out.println("\nYou put on the infrared goggles and scan the room.");
                 if (!currentRoom.getItems().isEmpty()) {
                     System.out.println("You notice items that might have been missed:");
@@ -652,7 +720,7 @@ public class Player {
                 for (Room adjacentRoom : currentRoom.getExits().values()) {
                     Puzzle adjacentPuzzle = adjacentRoom.getPuzzle();
                     if (adjacentPuzzle != null && !adjacentPuzzle.isSolved() && 
-                        adjacentPuzzle.getRequiredItems().contains(itemName.toLowerCase())) {
+                        adjacentPuzzle.getRequiredItems().contains(actualItemName.toLowerCase())) {
                         
                         // Find which direction this room is
                         String direction = "unknown";

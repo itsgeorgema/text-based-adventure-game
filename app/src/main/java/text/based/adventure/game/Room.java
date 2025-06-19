@@ -85,9 +85,9 @@ public class Room {
                     case "down": dirSymbol = "⤵"; break;
                 }
                 
-                // Check if this exit has a puzzle
-                Room exitRoom = exits.get(direction);
-                if (exitRoom.getPuzzle() != null && !exitRoom.getPuzzle().isSolved()) {
+                // Check if the destination room has a puzzle that affects entry
+                // A puzzle in the current room affects exits if it's not solved
+                if (puzzle != null && !puzzle.isSolved()) {
                     dirSymbol += "🔒"; // Add lock symbol to indicate blocked path
                 }
                 

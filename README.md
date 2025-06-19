@@ -2,7 +2,7 @@
 
 An immersive, text-based adventure game where you play as an elite infiltrator breaking into a high-security art museum. Navigate through secured rooms, bypass sophisticated puzzles, find and combine items, and reach the Control Room to complete the heist.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Installation & Setup](#-installation--setup)
@@ -75,371 +75,176 @@ If you're using an IDE like IntelliJ IDEA, Eclipse, or VS Code, you can run the 
 
 ## 🎮 Commands
 
+### Movement & Exploration
 - `go [direction]` - Move north, south, east, west, up, or down
-- `look` or `l` - Examine your current surroundings
+- `look` or `l` - Examine your current surroundings in detail
+- `map` - Display the museum layout with visited rooms marked
+
+### Item Management
 - `items` or `i` - List items in the current room
-- `take [item]` - Pick up an item
-- `use [item]` - Use an item (often on puzzles)
-- `inspect [item]` - Examine an item in detail
-- `combine [item1] with [item2]` - Combine two compatible items
 - `inventory` or `inv` - Show your current inventory
-- `map` - Display a map of the museum (shows visited rooms)
+- `take [item]` - Pick up an item from the current room
+- `inspect [item]` - Examine an item in your inventory for details
+
+### Puzzle Solving
+- `use [item]` - Use an item to solve puzzles or interact with the environment
+- `combine [item1] with [item2]` - Combine two compatible items to create tools
 - `hint` - Get contextual help for your current situation
+
+### Game Navigation
 - `help` or `h` - Show all available commands
 - `quit` - Exit the game
 
 ## 🗺️ Museum Layout
 
 ```
-                                         Control Room
-                                              ↑
-                                          IT Closet
-                                              ↑
-                                      Director's Office
-                                              ↑
-                                        Storage Room
-                                              ↑
-          Rooftop ← Library → Surveillance → Loading Dock → Exhibit Hall
-             ↑        ↑             ↑               ↑             ↑
-          Vault       |             |               |          Break Room
-             ↑        |             |               |             ↑
-Foyer → Gallery       |             |               |         Server Room
-             ↓        |             |               |             ↑
-    Security Office → Atrium → Archives → Workshop → Hall of Sculptures
+                              [UPPER FLOOR]
+                                    |
+                              CONTROL ROOM
+                                    ↑
+                               IT CLOSET
+                                    ↑
+                           DIRECTOR'S OFFICE
+                                    ↑
+                             STORAGE ROOM
+                                    ↑
+[UPPER LEVEL] → → → → → → → → → → → → → → → → → → → → → → → →
+ROOFTOP ← LIBRARY ← SURVEILLANCE ← LOADING DOCK ← EXHIBIT HALL ← BREAK ROOM
+   ↑
+VAULT
+   ↑
+FOYER → GALLERY
+           ↑
+[GROUND FLOOR] → → → → → → → → → → → → → → → → → → → → → → → →
+     SECURITY OFFICE → ATRIUM → ARCHIVES → WORKSHOP → HALL OF SCULPTURES → SERVER ROOM
 ```
 
-## 🧪 Winning Gameplay Path
+### Layout Overview:
+- **Ground Floor Main Path**: Foyer → Gallery → Security Office → Atrium → Archives → Workshop → Hall of Sculptures → Server Room
+- **Vault Branch**: Gallery → Vault → Rooftop (access to upper level)  
+- **Upper Level**: Rooftop → Library → Surveillance Room → Loading Dock → Exhibit Hall → Break Room
+- **Final Tower**: Hall of Sculptures → Storage Room → Director's Office → IT Closet → Control Room
+- **Server Room**: Accessible from Hall of Sculptures (requires puzzle)
+
+## 🎯 Winning Gameplay Path
+
+Here's an efficient walkthrough to complete the museum heist:
 
 ```
-> look
-📍 FOYER 📍
-===================================
-The museum's marble-floored entry. Moonlight casts long shadows through tall windows.
-Your footsteps echo quietly on the marble floor.
-
-👜 You can see:
- • 🔍 laser mirror
- • 🔄 decoy badge
-
-🚪 Available exits: north ↑
-===================================
-
-> inventory
-🎒 YOUR INVENTORY
-===================================
-🔄 COMBINABLE ITEMS (1):
------------------------------------
-🔄 emp device - Short-circuits devices
-
-🔍 OTHER ITEMS (2):
------------------------------------
-🔍 blueprint - Museum map for navigation
-🔍 decoy badge - Fake access card
-===================================
-
-> take laser mirror
-You picked up: laser mirror
-
-> go north
-🚶 You move north into a new area...
-📍 GALLERY 📍
-===================================
-Paintings hang elegantly across velvet walls. Famous paintings hang in dim lighting.
-Motion sensors glint occasionally in the corners.
-
-👜 You can see:
- • 🔍 thermal drill
-
-🚪 Available exits: east →🔒, west ←
-===================================
-
-> take thermal drill
-You picked up: thermal drill
-
-> go west
-🚶 You move west into a new area...
-📍 SECURITY OFFICE 📍
-===================================
-Rows of monitors blink rapidly. Screens flicker with camera feeds.
-A coffee cup sits abandoned, still warm.
-
-👜 You can see:
- • 🔍 infrared goggles
-
-🚪 Available exits: north ↑
-===================================
-
-> take infrared goggles
-You picked up: infrared goggles
-
-> go north
-🚶 You move north into a new area...
-📍 ATRIUM 📍
-===================================
-Open skylight and pressure-sensitive floors. A glass ceiling reveals the night sky above.
-The floor tiles are suspiciously uniform.
-
-👜 You can see:
- • 🔄 override chip
-
-🚪 Available exits: east →
-===================================
-
-> take override chip
-You picked up: override chip
-
-> go east
-🚶 You move east into a new area...
-📍 ARCHIVES 📍
-===================================
-Filing cabinets hide blueprints. Filing cabinets and document boxes line the walls.
-The air smells of old paper.
-
-👜 You can see:
- • 🔍 power cell
-
-🚪 Available exits: north ↑
-===================================
-
-> take power cell
-You picked up: power cell
-
-> combine thermal drill with power cell
-🔧 ITEMS COMBINED SUCCESSFULLY 🔧
-===================================
-You carefully fit the thermal drill and power cell together.
-After some precise adjustments, they lock into place with a satisfying click.
-
-You created: POWERED DRILL
-High-powered cutting tool capable of breaching any physical security
-===================================
-This new tool has been added to your inventory.
-
-> go north
-🚶 You move north into a new area...
-📍 WORKSHOP 📍
-===================================
-Tools and 3D-printed parts scattered around. Tools hang neatly on wall mounts.
-A half-finished project sits on the workbench.
-
-👜 You can see:
- • 🔍 zipline hook
-
-🚪 Available exits: east →
-===================================
-
-> take zipline hook
-You picked up: zipline hook
-
-> go east
-🚶 You move east into a new area...
-📍 HALL OF SCULPTURES 📍
-===================================
-Pedestals with missing sculptures. Stone and metal figures watch you silently.
-Their shadows seem to shift when you're not looking.
-
-👜 You can see:
- • 🔍 admin password
-
-🚪 Available exits: north ↑🔒
-===================================
-
-🧩 PUZZLE: Login console denies access.
-
-> take admin password
-You picked up: admin password
-
-> go north
-🚫 Blocked: Login console denies access.
-
-💡 Hint: You might be able to use the admin password in your inventory here.
-💡 You might be able to use the override chip that's in your inventory!
-
-> use admin password
-You attempt to use the admin password...
-⚙️ PARTIAL SUCCESS!
-You used the admin password correctly. (1/2 steps completed)
-You'll need 1 more components to solve this puzzle.
-
-> use override chip
-You attempt to use the override chip...
-✅ SUCCESS! Root access granted.
-
-> go north
-🚶 You move north into a new area...
-📍 SERVER ROOM 📍
-===================================
-Buzzing servers hum next to AC vents. Fans whir constantly as servers blink with activity.
-The air conditioning is almost too cold.
-
-👜 You can see:
- • 🔍 biometric bypass
-
-🚪 Available exits: 
-===================================
-
-> take biometric bypass
-You picked up: biometric bypass
-
-> map
-
-📍 MUSEUM MAP 📍
-(Visited rooms are marked with ✓)
------------------------------------------
-    CONTROL ROOM      
-       ↑       
-    IT CLOSET      
-       ↑       
-                                
-                                
-                                
-                                
-                                
-FOYER ✓  GALLERY ✓                      
-       ↓                  
-    SECURITY OFFICE ✓  ATRIUM ✓  ARCHIVES ✓  WORKSHOP ✓  HALL OF SCULPTURES ✓  SERVER ROOM 🔸
-                                                 ↓       
-                                          STORAGE ROOM      
-                                                 ↓       
-                                        DIRECTOR'S OFFICE      
------------------------------------------
-
-> go east
-The eastern passage is inaccessible. You'll need to find another route.
-
-Available directions:
-- south ↓
-
-> go south
-🚶 You move south into a new area...
-📍 HALL OF SCULPTURES 📍
-===================================
-Pedestals with missing sculptures. Stone and metal figures watch you silently.
-Their shadows seem to shift when you're not looking.
-
-There are no notable items in this area.
-
-🚪 Available exits: north ↑, south ↓
-===================================
-
-> go south
-🚶 You move south into a new area...
-📍 STORAGE ROOM 📍
-===================================
-Stacked shelves labeled with barcodes.
-
-👜 You can see:
- • 🔄 master override
-
-🚪 Available exits: north ↑, south ↓
-===================================
-
-> take master override
-You picked up: master override
-
-> go south
-🚶 You move south into a new area...
-📍 DIRECTOR'S OFFICE 📍
-===================================
-A desk covered in notes and hidden keys.
-
-👜 You can see:
- • 🔍 director's ring
-
-🚪 Available exits: north ↑, south ↓
-===================================
-
-🧩 PUZZLE: A hidden safe requiring special access.
-
-> take director's ring
-You picked up: director's ring
-
-> use director's ring
-You attempt to use the director's ring...
-✅ SUCCESS! Click. The hidden safe unlocks.
-
-> go south
-🚶 You move south into a new area...
-📍 IT CLOSET 📍
-===================================
-Cables tangle across floor tiles.
-
-👜 You can see:
- • 🔍 camera loop usb
-
-🚪 Available exits: north ↑🔒, south ↑
-===================================
-
-🧩 PUZZLE: Final door needs system-wide key.
-
-> take camera loop usb
-You picked up: camera loop usb
-
-> use master override
-You attempt to use the master override...
-✅ SUCCESS! Every lock disengages silently.
-
-The path to the Control Room is now open. Victory is within your grasp!
-
-> go north
-🚶 You move north into a new area...
-📍 CONTROL ROOM 📍
-===================================
-One switch controls every door in the museum. The central hub for all museum systems.
-From here, you can access everything.
-
-There are no notable items in this area.
-
-🚪 Available exits: south ↓
-===================================
-
-🎉 CONGRATULATIONS! 🎉
-You've successfully reached the Control Room and completed the museum heist!
-With access to the security system, you can now escape with your prize.
+# Starting in the Foyer (Ground Floor)
+> look                         # Examine your surroundings
+> take blueprint               # Take the museum layout map
+> take emp device              # Take the EMP device
+> go north                     # Move to Gallery
+
+# Gallery (Ground Floor)
+> take laser mirror            # Take the laser mirror
+> go west                      # Move to Security Office
+
+# Security Office (Ground Floor)
+> take infrared goggles        # Take the infrared goggles
+> go north                     # Move to Atrium
+
+# Atrium (Ground Floor)
+> take pressure plate          # Take the pressure plate
+> go east                      # Move to Archives
+
+# Archives (Ground Floor)
+> take glass cutter            # Take the glass cutter
+> go east                      # Move to Workshop
+
+# Workshop (Ground Floor)
+> take thermal drill           # Take the thermal drill
+> take power cell              # Take the power cell
+> combine thermal drill with power cell  # Create the powered drill
+> go east                      # Move to Hall of Sculptures
+
+# Hall of Sculptures (Ground Floor)
+> take admin password          # Take the admin password
+> go north                     # Move to Server Room
+
+# Server Room (Ground Floor)
+> take server access card      # Take the server access card
+> use admin password           # Use the admin password on the puzzle
+> use server access card       # Use the server access card on the puzzle
+> go south                     # Return to Hall of Sculptures
+
+# Start Final Tower Path
+> go south                     # Move to Storage Room
+> take biometric scanner       # Take the biometric scanner
+> go south                     # Move to Director's Office
+
+# Director's Office
+> take director's ring         # Take the director's ring
+> use director's ring          # Use the ring to solve the biometric puzzle
+> go south                     # Move to IT Closet
+
+# IT Closet
+> take master override         # Take the master override device
+> go south                     # Move to Control Room
+
+# Control Room - Final Step
+> use master override          # Use the override to complete the heist and win
 ```
-### Commands Only
+
+**Alternative Path (Exploring Upper Level):**
+This path allows you to access the Vault, explore the upper level, then return to the main path:
+
 ```
-> look
-> inventory
-> take laser mirror
-> go north
-> take thermal drill
-> go west
-> take infrared goggles
-> go north
-> take override chip
-> go east
-> take power cell
-> combine thermal drill with power cell
-> go north
-> take zipline hook
-> go east
-> take admin password
-> go north
-> use admin password
-> use override chip
-> go north
-> take biometric bypass
-> map
-> go east
-> go south
-> go south
-> take master override
-> go south
-> take director's ring
-> go south
-> take camera loop usb
-> use master override
-> go north
+# You must have the powered drill (combine thermal drill and power cell first)
+# From Gallery
+> go east                      # Move to Vault
+> take vault code              # Take the vault code
+> use vault code               # Use the code on the vault puzzle
+> use powered drill            # Use the powered drill on the vault puzzle
+> go north                     # Access the Rooftop (Upper Level)
+
+# Rooftop (Upper Level)
+> take zipline hook            # Take the zipline hook
+> go west                      # Move to Library
+
+# Library (Upper Level)
+> take coded ledger            # Take the coded ledger
+> go west                      # Move to Surveillance Room
+
+# Surveillance Room (Upper Level)
+> take camera loop usb         # Take the camera loop USB
+> go west                      # Move to Loading Dock
+
+# Loading Dock (Upper Level)
+> take override chip           # Take the override chip
+> go west                      # Move to Exhibit Hall
+
+# You can then continue exploring the upper level
+# Or return to the main path to complete the heist
 ```
+
+**Key Strategy Notes:**
+- **Item Combinations**: thermal drill + power cell = "powered drill" (essential for vault)
+- **Required Puzzles**: Vault (vault code + powered drill), Server Room (admin password + server access card), Director's Office (director's ring)
+- **Win Condition**: Reach the Control Room and use the master override device to complete the heist
+- **Navigation**: Use `map` command to track progress and `hint` for guidance
+- **Exploration**: Upper level accessible via Vault → Rooftop provides alternative routes and items
 
 ## 💡 Tips for Success
 
-1. Always `look` around when entering a new room
-2. `inspect` items to learn how they might be useful
-3. Remember that some items can be `combine`d to create more powerful tools
-4. Use the `map` and `hint` commands when you're stuck
-5. Pay attention to puzzle descriptions - they contain clues about which items you need
+1. **Start Systematically** - Begin by taking all items in the Foyer, then follow the main path through Gallery → Security Office → Atrium → Archives → Workshop → Hall of Sculptures → Server Room
+2. **Essential Combination** - Always combine the thermal drill + power cell to create the "powered drill" needed for the Vault
+3. **Puzzle Strategy** - Each puzzle requires specific items that can be found nearby or on the logical path to that room:
+   - Vault: requires vault code + powered drill
+   - Server Room: requires admin password + server access card
+   - Director's Office: requires director's ring
+4. **Use Navigation Tools** - `map` shows your progress and room layout, `hint` provides contextual guidance for your current situation
+5. **Explore Thoroughly** - Use `look` and `items` in each room, some rooms contain multiple useful items
+6. **Upper Level Access** - The Vault → Rooftop path opens access to additional rooms and items on the upper level
+7. **Final Tower Path** - From Hall of Sculptures, go south to access the final tower: Storage Room → Director's Office → IT Closet → Control Room
+8. **Win Condition** - You must use the master override in the Control Room to complete the heist
+
+### Core Game Features to Experience:
+- **Item Management**: Take, inspect, and combine items strategically
+- **Puzzle Solving**: Each major room has a unique puzzle requiring specific items  
+- **Room Exploration**: 20 unique rooms with detailed descriptions and hidden connections
+- **Progressive Difficulty**: Earlier rooms provide items needed for later challenges
 
 ## 📂 Project Structure
 

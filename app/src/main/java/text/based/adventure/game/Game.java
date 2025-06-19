@@ -16,28 +16,28 @@ public class Game {
         setupWorld();
         scanner = new Scanner(System.in);
         
-        System.out.println("""
-===========================
-  ART HEIST ADVENTURE
-===========================
-
-You are an elite infiltrator hired to break into the most secure art museum in the world. You are breaking in during the middle of the night when the museum is closed to maximize stealth.
-
-🎯 Objective:
-Navigate undetected through rooms, avoid advanced security systems, and retrieve the priceless artifact locked behind a multi-layered vault system.
-
-📍 Starting Location:
-You are in the Foyer — the marble-floored entry of the museum. Use the blueprint in your inventory to plan your movements.
-
-🧩 What to Do:
-- Explore rooms using commands like 'go north', 'take blueprint', or 'inspect item'
-- Use or combine the right items to bypass puzzles and unlock new rooms
-- Solve layered puzzles to reach the final control room
-- Type 'help' to see all available commands
-- Type 'quit' anytime to exit the game
-
-Good luck. The museum won't be closed for long...
-""");
+        System.out.println(
+            "===========================" + "\n" +
+            "  ART HEIST ADVENTURE" + "\n" +
+            "===========================" + "\n" +
+            "\n" +
+            "You are an elite infiltrator hired to break into the most secure art museum in the world. You are breaking in during the middle of the night when the museum is closed to maximize stealth." + "\n" +
+            "\n" +
+            "🎯 Objective:" + "\n" +
+            "Navigate undetected through rooms, avoid advanced security systems, and retrieve the priceless artifact locked behind a multi-layered vault system." + "\n" +
+            "\n" +
+            "📍 Starting Location:" + "\n" +
+            "You are in the Foyer — the marble-floored entry of the museum. Use the blueprint in your inventory to plan your movements." + "\n" +
+            "\n" +
+            "🧩 What to Do:" + "\n" +
+            "- Explore rooms using commands like 'go north', 'take blueprint', or 'inspect item'" + "\n" +
+            "- Use or combine the right items to bypass puzzles and unlock new rooms" + "\n" +
+            "- Solve layered puzzles to reach the final control room" + "\n" +
+            "- Type 'help' to see all available commands" + "\n" +
+            "- Type 'quit' anytime to exit the game" + "\n" +
+            "\n" +
+            "Good luck. The museum won't be closed for long..." 
+        );
         ArrayList<String> commandList = new ArrayList<>();
 
         // Add default commands in case the file cannot be loaded
@@ -146,8 +146,10 @@ Good luck. The museum won't be closed for long...
                 // Make sure we have input available
                 String input;
                 try {
-                    // Recreate the scanner for each input to prevent issues with Gradle
-                    scanner = new Scanner(System.in);
+                    // Only recreate scanner if it's null to prevent closing System.in too often
+                    if (scanner == null) {
+                        scanner = new Scanner(System.in);
+                    }
                     
                     // Check if System.in is available
                     if (System.in.available() == 0) {
@@ -243,9 +245,9 @@ Good luck. The museum won't be closed for long...
                 // Process the command
                 if (input.equals("quit")) {
                     System.out.println("\nAre you sure you want to quit? Your progress will not be saved. [y/N]");
-                    try (Scanner confirmScanner = new Scanner(System.in)) {
-                        // Using try-with-resources to automatically close the scanner
-                        String confirm = confirmScanner.nextLine().trim().toLowerCase();
+                    try {
+                        // Use existing scanner instead of creating a new one that closes System.in
+                        String confirm = scanner.nextLine().trim().toLowerCase();
                         if (confirm.equals("y")) {
                             System.out.println("\nThanks for playing the Art Heist Adventure!");
                             // Force immediate clean exit
@@ -259,30 +261,10 @@ Good luck. The museum won't be closed for long...
                 } else if (input.equals("look") || input.equals("l")) {
                     System.out.println(player.getCurrentRoom().getFullDescription());
                     
-                    // Check if player has reached the end game
+                    // No longer automatically win on reaching the Control Room
                     if (player.getCurrentRoom().getName().equals("Control Room")) {
-                        System.out.println("\n🎉 CONGRATULATIONS! 🎉");
-                        System.out.println("You've successfully reached the Control Room and completed the museum heist!");
-                        System.out.println("With access to the security system, you can now escape with your prize.");
-                        System.out.println("\nWould you like to play again? [y/N]");
-                        
-                        // Use try-with-resources to ensure clean handling
-                        String again;
-                        try (Scanner winScanner = new Scanner(System.in)) {
-                            again = winScanner.nextLine().trim().toLowerCase();
-                        } catch (Exception e) {
-                            // If there's an error, assume "no"
-                            again = "n";
-                        }
-                        if (again.equals("y")) {
-                            System.out.println("\nRestarting the game...\n");
-                            setupWorld();
-                            System.out.println("You are back at the " + player.getCurrentRoom().getName());
-                        } else {
-                            System.out.println("\nThanks for playing!");
-                            gameRunning = false;
-                            System.exit(0); // Ensure clean exit
-                        }
+                        System.out.println("\nYou've reached the Control Room, but the security system is still active.");
+                        System.out.println("You need to use the master override device to complete your heist.");
                     }
                 } else if (input.equals("items") || input.equals("i")) {
                     player.getCurrentRoom().listItems();
@@ -395,91 +377,134 @@ Good luck. The museum won't be closed for long...
             rooms.add(new Room(roomNames[i], roomDescs[i]));
         }
 
-        // Connect rooms logically
-        rooms.get(0).setExit("north", rooms.get(1));
-        rooms.get(1).setExit("east", rooms.get(2));
-        rooms.get(1).setExit("west", rooms.get(3));
-        rooms.get(3).setExit("north", rooms.get(4));
-        rooms.get(2).setExit("north", rooms.get(5));
-        rooms.get(4).setExit("east", rooms.get(6));
-        rooms.get(6).setExit("north", rooms.get(7));
-        rooms.get(7).setExit("east", rooms.get(8));
-        rooms.get(8).setExit("north", rooms.get(9));
-        rooms.get(5).setExit("west", rooms.get(10));
-        rooms.get(10).setExit("north", rooms.get(11));
-        rooms.get(11).setExit("east", rooms.get(12));
-        rooms.get(12).setExit("north", rooms.get(13));
-        rooms.get(13).setExit("east", rooms.get(14));
-        rooms.get(14).setExit("north", rooms.get(15));
-        rooms.get(15).setExit("east", rooms.get(16));
-        rooms.get(16).setExit("north", rooms.get(17));
-        rooms.get(17).setExit("east", rooms.get(18));
-        rooms.get(18).setExit("north", rooms.get(19));
+        // Connect rooms in a logical layout - Main Floor Level (horizontal)
+        // Ground floor main path: Foyer → Gallery → Security Office → Atrium → Archives → Workshop → Hall of Sculptures → Server Room
+        rooms.get(0).setExit("north", rooms.get(1));     // Foyer → Gallery
+        rooms.get(1).setExit("south", rooms.get(0));     // Gallery → Foyer
+        rooms.get(1).setExit("west", rooms.get(3));      // Gallery → Security Office
+        rooms.get(3).setExit("east", rooms.get(1));      // Security Office → Gallery
+        rooms.get(3).setExit("north", rooms.get(4));     // Security Office → Atrium
+        rooms.get(4).setExit("south", rooms.get(3));     // Atrium → Security Office
+        rooms.get(4).setExit("east", rooms.get(6));      // Atrium → Archives
+        rooms.get(6).setExit("west", rooms.get(4));      // Archives → Atrium
+        rooms.get(6).setExit("east", rooms.get(7));      // Archives → Workshop
+        rooms.get(7).setExit("west", rooms.get(6));      // Workshop → Archives
+        rooms.get(7).setExit("east", rooms.get(8));      // Workshop → Hall of Sculptures
+        rooms.get(8).setExit("west", rooms.get(7));      // Hall of Sculptures → Workshop
+
+        // Secondary connections from main floor
+        rooms.get(1).setExit("east", rooms.get(2));      // Gallery → Vault
+        rooms.get(2).setExit("west", rooms.get(1));      // Vault → Gallery
+        rooms.get(8).setExit("north", rooms.get(9));     // Hall of Sculptures → Server Room (locked until puzzle solved)
+        rooms.get(9).setExit("south", rooms.get(8));     // Server Room → Hall of Sculptures
+
+        // Upper level access from Vault
+        rooms.get(2).setExit("north", rooms.get(5));     // Vault → Rooftop (access point to upper level)
+        rooms.get(5).setExit("south", rooms.get(2));     // Rooftop → Vault
+
+        // Upper floor layout: Rooftop → Library → Surveillance Room → Loading Dock → Exhibit Hall → Break Room
+        rooms.get(5).setExit("west", rooms.get(10));     // Rooftop → Library
+        rooms.get(10).setExit("east", rooms.get(5));     // Library → Rooftop
+        rooms.get(10).setExit("west", rooms.get(11));    // Library → Surveillance Room
+        rooms.get(11).setExit("east", rooms.get(10));    // Surveillance Room → Library
+        rooms.get(11).setExit("west", rooms.get(12));    // Surveillance Room → Loading Dock
+        rooms.get(12).setExit("east", rooms.get(11));    // Loading Dock → Surveillance Room
+        rooms.get(12).setExit("west", rooms.get(13));    // Loading Dock → Exhibit Hall
+        rooms.get(13).setExit("east", rooms.get(12));    // Exhibit Hall → Loading Dock
+        rooms.get(13).setExit("west", rooms.get(14));    // Exhibit Hall → Break Room
+        rooms.get(14).setExit("east", rooms.get(13));    // Break Room → Exhibit Hall
+
+        // Vertical tower (Final Path): Hall of Sculptures → Storage Room → Director's Office → IT Closet → Control Room
+        rooms.get(8).setExit("south", rooms.get(15));    // Hall of Sculptures → Storage Room
+        rooms.get(15).setExit("north", rooms.get(8));    // Storage Room → Hall of Sculptures
+        rooms.get(15).setExit("south", rooms.get(16));   // Storage Room → Director's Office
+        rooms.get(16).setExit("north", rooms.get(15));   // Director's Office → Storage Room
+        rooms.get(16).setExit("south", rooms.get(18));   // Director's Office → IT Closet
+        rooms.get(18).setExit("north", rooms.get(16));   // IT Closet → Director's Office
+        rooms.get(18).setExit("south", rooms.get(19));   // IT Closet → Control Room (locked until puzzle solved)
+        rooms.get(19).setExit("north", rooms.get(18));   // Control Room → IT Closet
 
         // Clear any existing items
         for (Room room : rooms) {
             room.clearItems();
         }
 
-        // Place items according to the walkthrough and museum layout
-        // Foyer - Room 0
-        rooms.get(0).addItem(new Item("laser mirror", "Redirects laser traps"));
-        rooms.get(0).addItem(new Item("decoy badge", "Fools some card readers", true));
-
-        // Gallery - Room 1
-        rooms.get(1).addItem(new Item("thermal drill", "Cuts through vault hinges", true));
-
-        // Security Office - Room 3
-        rooms.get(3).addItem(new Item("infrared goggles", "Reveal motion sensors"));
-
-        // Atrium - Room 4
-        rooms.get(4).addItem(new Item("override chip", "Bypasses firmware locks", true));
-
-        // Archives - Room 6
-        rooms.get(6).addItem(new Item("power cell", "Activates emergency systems", true));
-
-        // Workshop - Room 7
-        rooms.get(7).addItem(new Item("zipline hook", "Traverse downward gaps"));
-
-        // Hall of Sculptures - Room 8
-        rooms.get(8).addItem(new Item("admin password", "Overrides control panel logins"));
-
-        // Server Room - Room 9
-        rooms.get(9).addItem(new Item("biometric bypass", "Works on locked panels"));
-
-        // Storage Room - Room 15
-        rooms.get(15).addItem(new Item("master override", "Universal key for all doors", true));
-
-        // Director's Office - Room 16
-        rooms.get(16).addItem(new Item("director's ring", "Unlocks his private safe"));
-
-        // IT Closet - Room 18
-        rooms.get(18).addItem(new Item("camera loop usb", "Plugs into feed to loop footage"));
-
-        // Add other useful items to remaining rooms
-        rooms.get(2).addItem(new Item("vault code", "A sticky note with a 4-digit pin"));
-        rooms.get(5).addItem(new Item("glass cutter", "Removes panels without alerting alarms", true));
-        rooms.get(10).addItem(new Item("coded ledger", "Contains key to decipher passphrases"));
-        rooms.get(11).addItem(new Item("surveillance map", "Shows blind spots"));
-        rooms.get(12).addItem(new Item("art crate key", "Unlocks hidden compartments"));
-        rooms.get(13).addItem(new Item("night vision visor", "Lets you see when power is out"));
-        rooms.get(14).addItem(new Item("multi-tool", "Swiss-army knife of heist tools"));
-        rooms.get(17).addItem(new Item("wireless bug", "Transmits security updates"));
+        // Place items strategically throughout the museum
+        // Ground floor items (easily accessible)
+        rooms.get(0).addItem(new Item("blueprint", "Museum layout map"));
+        rooms.get(0).addItem(new Item("emp device", "Disables electronic devices", true));
         
-        // Other items that can be added to player inventory through combinations
-        // These items are not initially placed in rooms
+        rooms.get(1).addItem(new Item("laser mirror", "Redirects laser beams"));
+        
+        rooms.get(2).addItem(new Item("vault code", "A 4-digit combination: 7394"));
+        
+        rooms.get(3).addItem(new Item("infrared goggles", "Reveals invisible motion sensors"));
+        
+        rooms.get(4).addItem(new Item("pressure plate", "Bypasses weight sensors", true));
+        
+        rooms.get(6).addItem(new Item("glass cutter", "Cuts through reinforced glass", true));
+        
+        rooms.get(7).addItem(new Item("thermal drill", "For cutting through metal", true));
+        rooms.get(7).addItem(new Item("power cell", "Powers electronic tools", true));
+        
+        rooms.get(8).addItem(new Item("admin password", "Access code: ROOT_ADMIN_2024"));
+        
+        rooms.get(9).addItem(new Item("server access card", "Grants system privileges"));
+        
+        // Upper floor items (require vault access)
+        rooms.get(5).addItem(new Item("zipline hook", "For emergency escape routes"));
+        
+        rooms.get(10).addItem(new Item("coded ledger", "Contains cipher keys"));
+        
+        rooms.get(11).addItem(new Item("camera loop usb", "Loops security footage"));
+        
+        rooms.get(12).addItem(new Item("override chip", "Bypasses security systems", true));
+        
+        rooms.get(13).addItem(new Item("night vision goggles", "For dark environments"));
+        
+        rooms.get(14).addItem(new Item("keycard beta", "Secondary access card"));
+        
+        // Final tower items (advanced area)
+        rooms.get(15).addItem(new Item("biometric scanner", "Reads fingerprints"));
+        
+        rooms.get(16).addItem(new Item("director's ring", "Master authentication key"));
+        
+        // Move the master override to the IT Closet - player has to take it and use it in Control Room
+        rooms.get(18).addItem(new Item("master override", "Universal access device to complete the heist", true));
 
-        // Add layered puzzles that span rooms and require specific or combined items
-        rooms.get(2).setPuzzle(new Puzzle(List.of("vault code", "thermal drill"), "A vault door secured with both code and bolts.", "You breach the vault with code and power."));
-        rooms.get(9).setPuzzle(new Puzzle(List.of("override chip", "admin password"), "Login console denies access.", "Root access granted."));
-        rooms.get(13).setPuzzle(new Puzzle(List.of("glass cutter", "replica sculpture"), "Case sealed with glass sensor.", "The item is swapped without alarm."));
-        rooms.get(18).setPuzzle(new Puzzle(List.of("director's ring"), "A hidden safe requiring special access.", "Click. The hidden safe unlocks."));
-        rooms.get(19).setPuzzle(new Puzzle(List.of("master override"), "Final door needs system-wide key.", "Every lock disengages silently."));
+        // Setup logical puzzles with accessible items
+        // Vault puzzle - requires items from ground floor
+        rooms.get(2).setPuzzle(new Puzzle(
+            List.of("vault code", "powered drill"), 
+            "The vault door has both a code lock and reinforced bolts.",
+            "The code unlocks the mechanism, and the drill cuts through the bolts."
+        ));
+        
+        // Server Room puzzle - requires items from main path
+        rooms.get(9).setPuzzle(new Puzzle(
+            List.of("admin password", "server access card"), 
+            "The server requires both admin credentials and physical access.",
+            "System authentication successful. Access granted."
+        ));
+        
+        // Director's Office puzzle - requires item from same room
+        rooms.get(16).setPuzzle(new Puzzle(
+            List.of("director's ring"), 
+            "A hidden biometric safe requires the director's authentication.",
+            "The safe recognizes the director's ring and unlocks silently."
+        ));
+        
+        // Control Room no longer has a puzzle that auto-solves
+        // Instead, the player needs to use the master override item explicitly
 
-        // Initialize player with starting inventory according to the walkthrough
+        // Initialize player in the Foyer
         player = new Player(rooms.get(0));
-        player.addItem(new Item("blueprint", "Museum map for navigation"));
-        player.addItem(new Item("emp device", "Short-circuits devices", true));
+        // Mark the starting room as visited
+        rooms.get(0).setVisited(true);
+        
+        // Player starts with basic infiltration gear
+        player.addItem(new Item("lock picks", "Basic lock manipulation tools"));
+        player.addItem(new Item("flashlight", "Illuminates dark areas"));
     }
     
     // New method to display a map of visited rooms
@@ -488,23 +513,28 @@ Good luck. The museum won't be closed for long...
         System.out.println("(Visited rooms are marked with ✓)");
         System.out.println("-----------------------------------------");
         
-        // Create a simplified version of the map
+        // Create a map that matches the actual room connections
         String[][] mapLines = {
-            {"", "", "", "", "CONTROL ROOM", "", ""},
-            {"", "", "", "", "   ↑   ", "", ""},
-            {"", "", "", "", "IT CLOSET", "", ""},
-            {"", "", "", "", "   ↑   ", "", ""},
-            {"", "ROOFTOP", "←", "LIBRARY", "→", "CONSERVATORY", "→", "IT CLOSET"},
-            {"", "   ↑   ", "", "   ↑   ", "", "     ↑     ", "", ""},
-            {"", "VAULT", "", "SURVEILLANCE", "→", "LOADING DOCK", "→", "EXHIBIT HALL"},
-            {"", "   ↑   ", "", "", "", "", "", ""},
-            {"FOYER", "→", "GALLERY", "", "", "", "", "BREAK ROOM"},
-            {"", "", "   ↓   ", "", "", "", "", "   ↑   "},
-            {"", "", "SECURITY", "→", "ATRIUM", "→", "ARCHIVES", "→", "WORKSHOP", "→", "HALL OF SCULPTURES", "→", "SERVER ROOM"},
-            {"", "", "", "", "", "", "", "", "", "", "     ↓     ", "", ""},
-            {"", "", "", "", "", "", "", "", "", "", "STORAGE ROOM", "", ""},
-            {"", "", "", "", "", "", "", "", "", "", "     ↓     ", "", ""},
-            {"", "", "", "", "", "", "", "", "", "", "DIRECTOR'S OFFICE", "", ""}
+            {"", "", "", "", "", "", "", "", "", "", "", "", "[UPPER FLOOR]", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "     |  ", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "CONTROL ROOM", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "   ↑   ", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "IT CLOSET", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "   ↑   ", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "DIRECTOR'S OFFICE", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "   ↑   ", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "STORAGE ROOM", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", "", "   ↑   ", "", ""},
+            {"[UPPER LEVEL]", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→"},
+            {"ROOFTOP", "←", "LIBRARY", "←", "SURVEILLANCE", "←", "LOADING DOCK", "←", "EXHIBIT HALL", "←", "BREAK ROOM", "", "", "", ""},
+            {"   ↑   ", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+            {"VAULT", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+            {"   ↑   ", "", "", "", "", "", "", "", "", "", "", "", "", "", ""},
+            {"FOYER", "→", "GALLERY", "", "", "", "", "", "", "", "", "", "", "", ""},
+            {"", "", "   ↑   ", "", "", "", "", "", "", "", "", "", "", "", ""},
+            {"[GROUND FLOOR]", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→", "→"},
+            {"", "", "SECURITY", "→", "ATRIUM", "→", "ARCHIVES", "→", "WORKSHOP", "→", "HALL OF", "→", "SERVER ROOM", "", ""},
+            {"", "", "OFFICE", "", "", "", "", "", "", "", "SCULPTURES", "", "", "", ""},
         };
 
         // Mark visited rooms
@@ -530,14 +560,43 @@ Good luck. The museum won't be closed for long...
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 String cell = map[i][j];
-                // Only check non-empty cells
-                if (cell != null && !cell.isEmpty() && !cell.equals("→") && !cell.equals("←") && !cell.equals("↑") && !cell.equals("↓")) {
-                    // Check if the cell contains the room name (without the checkmark)
+                // Only check non-empty cells that aren't arrows
+                if (cell != null && !cell.isEmpty() && 
+                    !cell.equals("→") && !cell.equals("←") && 
+                    !cell.equals("↑") && !cell.equals("↓")) {
+                    
+                    // Get the base room name without markers
                     String roomBaseName = roomName.contains(" ✓") ? roomName.substring(0, roomName.indexOf(" ✓")) : 
                                          (roomName.contains(" 🔸") ? roomName.substring(0, roomName.indexOf(" 🔸")) : roomName);
                     
-                    if (cell.contains(roomBaseName)) {
+                    // Normalize strings for comparison
+                    String normalizedCell = cell.toUpperCase().replace(" ", "");
+                    String normalizedBaseName = roomBaseName.toUpperCase().replace(" ", "");
+                    
+                    // Handle specific room matches
+                    if ((normalizedCell.equals("FOYER") && normalizedBaseName.equals("FOYER")) ||
+                        (normalizedCell.equals("GALLERY") && normalizedBaseName.equals("GALLERY")) ||
+                        (normalizedCell.equals("VAULT") && normalizedBaseName.equals("VAULT")) ||
+                        (normalizedCell.equals("SECURITY") && normalizedBaseName.equals("SECURITYOFFICE")) ||
+                        (normalizedCell.equals("OFFICE") && normalizedBaseName.equals("SECURITYOFFICE")) ||
+                        (normalizedCell.equals("ATRIUM") && normalizedBaseName.equals("ATRIUM")) ||
+                        (normalizedCell.equals("ARCHIVES") && normalizedBaseName.equals("ARCHIVES")) ||
+                        (normalizedCell.equals("WORKSHOP") && normalizedBaseName.equals("WORKSHOP")) ||
+                        (normalizedCell.equals("HALLOF") && normalizedBaseName.equals("HALLOFSCULPTURES")) ||
+                        (normalizedCell.equals("SCULPTURES") && normalizedBaseName.equals("HALLOFSCULPTURES")) ||
+                        (normalizedCell.equals("SERVERROOM") && normalizedBaseName.equals("SERVERROOM")) ||
+                        (normalizedCell.equals("ROOFTOP") && normalizedBaseName.equals("ROOFTOP")) ||
+                        (normalizedCell.equals("LIBRARY") && normalizedBaseName.equals("LIBRARY")) ||
+                        (normalizedCell.equals("SURVEILLANCE") && normalizedBaseName.equals("SURVEILLANCEROOM")) ||
+                        (normalizedCell.equals("LOADINGDOCK") && normalizedBaseName.equals("LOADINGDOCK")) ||
+                        (normalizedCell.equals("EXHIBITHALL") && normalizedBaseName.equals("EXHIBITHALL")) ||
+                        (normalizedCell.equals("BREAKROOM") && normalizedBaseName.equals("BREAKROOM")) ||
+                        (normalizedCell.equals("STORAGEROOM") && normalizedBaseName.equals("STORAGEROOM")) ||
+                        (normalizedCell.equals("DIRECTOR'SOFFICE") && normalizedBaseName.equals("DIRECTOR'SOFFICE")) ||
+                        (normalizedCell.equals("ITCLOSET") && normalizedBaseName.equals("ITCLOSET")) ||
+                        (normalizedCell.equals("CONTROLROOM") && normalizedBaseName.equals("CONTROLROOM"))) {
                         map[i][j] = roomName;
+                        return;
                     }
                 }
             }
@@ -577,29 +636,44 @@ Good luck. The museum won't be closed for long...
             return;
         }
         
-        // If no puzzle in current room, provide guidance based on room
+        // If no puzzle in current room, provide guidance based on room and progress
         switch(roomName) {
             case "Foyer":
-                System.out.println("Try going north to the Gallery to begin your exploration.");
+                System.out.println("Start by taking the blueprint and emp device, then go north to the Gallery.");
                 break;
             case "Gallery":
-                System.out.println("From here you can go east to find the Vault or west to the Security Office.");
+                System.out.println("From here you can go east to the Vault or west to the Security Office. Take the laser mirror first!");
                 break;
             case "Security Office":
-                System.out.println("Security systems can be bypassed with the right tools. Try going north to the Atrium.");
+                System.out.println("Get the infrared goggles here, then go north to the Atrium to continue the main path.");
                 break;
             case "Atrium":
-                System.out.println("The open skylight provides multiple paths. Try going east to the Archives.");
+                System.out.println("Take the pressure plate, then go east to Archives to progress through the museum.");
                 break;
             case "Vault":
-                System.out.println("You've breached the vault! Try going north to the Rooftop for a better vantage point.");
+                System.out.println("This vault needs both a code and a powered drill to open. Combine thermal drill with power cell first!");
                 break;
-            case "Control Room":
-                System.out.println("You've reached the final control room! You've successfully completed the heist!");
+            case "Archives":
+                System.out.println("Get the glass cutter here, then continue east to the Workshop.");
                 break;
+            case "Workshop":
+                System.out.println("Take both the thermal drill and power cell. Combine them to create a 'powered drill'!");
+                break;
+            case "Hall of Sculptures":
+                System.out.println("Take the admin password. You can go north to Server Room or south to Storage Room.");
+                break;
+            case "Server Room":
+                System.out.println("This room needs admin password and server access card to unlock its secrets.");
+                break;
+            case "Rooftop":
+                System.out.println("You're on the upper level! Go west to Library to explore the upper floor.");
+                break;
+                            case "Control Room":
+                    System.out.println("You need to use the master override to complete the heist!");
+                    break;
             default:
-                // Generic hint about taking items and exploring
-                System.out.println("Make sure to take any items in this room and explore all possible exits.");
+                // Generic hint about exploring and taking items
+                System.out.println("Look around for useful items and check all available exits.");
                 List<String> directions = new ArrayList<>(currentRoom.getExits().keySet());
                 if (!directions.isEmpty()) {
                     System.out.println("From here you can go: " + String.join(", ", directions));

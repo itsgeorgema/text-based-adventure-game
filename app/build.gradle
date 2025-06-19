@@ -28,7 +28,8 @@ dependencies {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        // Use Java 11 for better compatibility
+        languageVersion = JavaLanguageVersion.of(11)
     }
 }
 
@@ -69,13 +70,8 @@ run {
         println("To play: Type commands like 'look', 'go north', etc. after the '>' prompt.\n")
     }
     
-    // Create a shell script to run the game directly
+    // Don't overwrite the existing run_game.sh script
     doLast {
-        def scriptFile = new File("${rootProject.projectDir}/run_game.sh")
-        scriptFile.text = """#!/bin/bash
-java -cp "${project.buildDir}/classes/java/main" text.based.adventure.game.App
-"""
-        scriptFile.setExecutable(true)
         println("\nFor better terminal experience, you can also run the game using: ./run_game.sh\n")
     }
 }
